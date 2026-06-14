@@ -7,6 +7,7 @@ export default function AgentDirectory() {
       name: "Research Analyst",
       role: "Market & landscape intelligence",
       icon: Network,
+      type: "research",
       expertise: ["Competitive analysis", "Market sizing", "Trend mapping"],
       deliverables: ["Research brief", "Competitor matrix", "Opportunity map"],
       sample: `"Researched 12 voting dApps, identified 3 unmet UX patterns, sized the Solana DAO market at 4.2k active treasuries."`
@@ -15,6 +16,7 @@ export default function AgentDirectory() {
       name: "Product Designer",
       role: "UX flows and interaction design",
       icon: LayoutTemplate,
+      type: "design",
       expertise: ["User flows", "IA", "Interaction patterns"],
       deliverables: ["Flow diagrams", "Wireframes", "Component specs"],
       sample: `"Mapped a 3-step proposal flow with a single-screen voting modal."`
@@ -23,6 +25,7 @@ export default function AgentDirectory() {
       name: "Graphic Designer",
       role: "Visual identity and brand assets",
       icon: PenTool,
+      type: "design",
       expertise: ["Logo systems", "Color & type", "Marketing visuals"],
       deliverables: ["Logo lockups", "Color tokens", "Social cards"],
       sample: `"Built a 5-color minimal palette with a wordmark and 3 social templates."`
@@ -31,6 +34,7 @@ export default function AgentDirectory() {
       name: "Software Engineer",
       role: "Code generation & architecture",
       icon: Code,
+      type: "engineering",
       expertise: ["Full-stack TS", "Smart contracts", "DevOps"],
       deliverables: ["File tree", "Source files", "Deployment notes"],
       sample: `"Shipped a Next.js + Anchor scaffold with 27 files and a one-click Vercel config."`
@@ -39,6 +43,7 @@ export default function AgentDirectory() {
       name: "Technical Writer",
       role: "READMEs, API docs, developer onboarding",
       icon: FileText,
+      type: "content",
       expertise: ["Dev docs", "Tutorials", "Reference"],
       deliverables: ["README", "Setup guide", "API reference"],
       sample: `"Drafted a 5-minute quickstart with copy-paste env setup."`
@@ -47,6 +52,7 @@ export default function AgentDirectory() {
       name: "Content Writer",
       role: "Long-form & narrative content",
       icon: Type,
+      type: "content",
       expertise: ["Articles", "Launch threads", "Pitch copy"],
       deliverables: ["Launch thread", "Article", "Submission pitch"],
       sample: `"Wrote an 8-tweet launch thread and a 300-word feature article."`
@@ -55,6 +61,7 @@ export default function AgentDirectory() {
       name: "Business Developer",
       role: "Partnerships & revenue surfaces",
       icon: BarChart,
+      type: "strategy",
       expertise: ["Partnership mapping", "Outreach"],
       deliverables: ["Partner list", "Outreach drafts"],
       sample: `"Identified 5 potential integration partners in the DeFi space."`
@@ -63,6 +70,7 @@ export default function AgentDirectory() {
       name: "Growth Strategist",
       role: "Positioning & GTM",
       icon: TrendingUp,
+      type: "strategy",
       expertise: ["Positioning", "Acquisition loops", "Metrics"],
       deliverables: ["Positioning brief", "GTM plan", "Metrics"],
       sample: `"Designed a referral loop projecting a 15% WoW growth rate."`
@@ -71,11 +79,14 @@ export default function AgentDirectory() {
       name: "Community Manager",
       role: "Community ops & engagement",
       icon: Users,
+      type: "community",
       expertise: ["Discord/X strategy", "Programs"],
       deliverables: ["Comms calendar", "Engagement playbook"],
       sample: `"Drafted a 4-week engagement plan for managing beta tester feedback."`
     }
   ];
+
+  const getAgentColor = (type: string) => `var(--agent-${type}, var(--agent-default))`;
 
   return (
     <div className="flex flex-col h-full overflow-y-auto p-8 scrollbar-hide pb-20">
@@ -97,12 +108,21 @@ export default function AgentDirectory() {
         {agents.map((agent, i) => (
           <div 
             key={agent.name}
-            className="bg-[#0b0c10] border border-[#27272a] rounded-xl p-5 flex flex-col group hover:border-[#3f3f46] transition-colors"
+            className="bg-[#0b0c10] border border-[#27272a] rounded-xl p-5 flex flex-col group transition-all duration-300 hover:border-[var(--hover-border-color)]"
+            style={{ 
+              ['--hover-border-color' as any]: getAgentColor(agent.type) 
+            }}
           >
             {/* Header Content */}
             <div className="flex items-start gap-4 mb-6">
-              <div className="w-10 h-10 rounded-md bg-[#050505] border border-[#27272a] flex items-center justify-center shrink-0">
-                <agent.icon className="w-5 h-5 text-[#00e59b]" />
+              <div 
+                className="w-10 h-10 rounded-md bg-[#050505] border flex items-center justify-center shrink-0 transition-colors"
+                style={{ 
+                  borderColor: 'var(--hover-border-color)',
+                  color: 'var(--hover-border-color)' 
+                }}
+              >
+                <agent.icon className="w-5 h-5" />
               </div>
               <div className="flex flex-col pt-1">
                 <h3 className="text-white font-semibold text-[15px] leading-tight">
@@ -121,7 +141,11 @@ export default function AgentDirectory() {
               </div>
               <div className="flex flex-wrap gap-2">
                 {agent.expertise.map((exp, j) => (
-                  <span key={j} className="px-2 py-1.5 rounded text-[11px] font-medium bg-[#18181b] border border-[#27272a] text-[#a1a1aa]">
+                  <span 
+                    key={j} 
+                    className="px-2 py-1.5 rounded text-[11px] font-medium bg-[#18181b] border border-[#27272a]"
+                    style={{ color: 'var(--hover-border-color)' }}
+                  >
                     {exp}
                   </span>
                 ))}
@@ -135,8 +159,8 @@ export default function AgentDirectory() {
               </div>
               <ul className="text-[13px] text-[#e4e4e7] space-y-2">
                 {agent.deliverables.map((item, j) => (
-                  <li key={j} className="flex items-center gap-2 before:content-['•'] before:text-[#52525b]">
-                    {item}
+                  <li key={j} className="flex items-center gap-2 before:content-['•']" style={{ ['--tw-content' as any]: '"•"', color: 'var(--hover-border-color)' }}>
+                    <span className="text-[#e4e4e7]">{item}</span>
                   </li>
                 ))}
               </ul>

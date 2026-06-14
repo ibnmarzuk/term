@@ -43,8 +43,34 @@
   --color-background: #0a0a0b;
   --color-on-background: #ededed;
 
+  /* Agent Domain Colors */
+  --agent-engineering: #22d3ee; /* Cyan */
+  --agent-qa: #fb7185; /* Rose */
+  --agent-research: #fbbf24; /* Amber */
+  --agent-design: #c084fc; /* Purple */
+  --agent-content: #34d399; /* Emerald */
+  --agent-strategy: #f472b6; /* Pink */
+  --agent-community: #facc15; /* Yellow */
+  --agent-orion: #818cf8; /* Indigo */
+  --agent-default: #94a3b8; /* Slate */
+
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --apex-bg-base: #000000;
+  --apex-bg-surface: #1B1B1B;
+  --apex-bg-card: #2A2A2E;
+  
+  --apex-accent-cyan: #00DCC4;
+  --apex-accent-purple: #575ECF;
+  
+  --apex-text-primary: #FFFFFF;
+  --apex-text-secondary: #C5C1B9;
+  --apex-text-tertiary: #8B8680;
+  
+  --apex-border-subtle: #3D3D42;
+  --apex-border-medium: #4A4A50;
+  --apex-border-interactive: #454545;
 
   --radius-sm: 0.25rem;
   --radius-md: 0.75rem;
@@ -127,5 +153,242 @@ body {
   color: var(--color-on-background);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   AUTHENTICATION UI COMPONENT STYLES
+   A modular, scalable styling system adhering to the APEX OS design language.
+   ========================================================================== */
+
+@layer components {
+  /* Layout & Containers */
+  .apex-auth-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--apex-bg-base);
+    color: var(--apex-text-primary);
+    font-family: var(--font-sans);
+    padding: 1rem;
+  }
+
+  /* Core Card Structure */
+  .apex-auth-card {
+    background-color: var(--apex-bg-card);
+    border: 1px solid var(--apex-border-medium);
+    border-radius: 12px;
+    padding: 32px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    transition: all 0.3s ease;
+  }
+
+  /* Typography Hierarchy */
+  .apex-auth-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 32px;
+    text-align: center;
+  }
+
+  .apex-auth-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--apex-text-primary);
+    line-height: 40px;
+    margin-bottom: 8px;
+  }
+  
+  .apex-auth-subtitle {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--apex-text-secondary);
+    line-height: 20px;
+  }
+
+  /* Form Elements & Layout */
+  .apex-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .apex-form-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--apex-text-secondary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* Input Fields */
+  .apex-input {
+    background-color: rgba(26, 27, 34, 0.5); /* translucent base over card */
+    color: var(--apex-text-primary);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    padding: 12px 16px;
+    border-radius: 6px;
+    border: 1px solid var(--apex-border-medium);
+    outline: none;
+    transition: all 0.2s ease;
+    height: 48px;
+    width: 100%;
+  }
+
+  .apex-input::placeholder {
+    color: var(--apex-text-tertiary);
+  }
+
+  /* Interactive States for Input */
+  .apex-input:focus {
+    border-color: var(--apex-accent-cyan);
+    box-shadow: rgba(0, 220, 196, 0.2) 0px 0px 30px 0px, rgba(0, 0, 0, 0.1) 0px 1px 3px 0px;
+  }
+
+  .apex-input.has-error {
+    border-color: var(--color-error);
+  }
+
+  .apex-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Status Indicators */
+  .apex-error-text {
+    font-size: 12px;
+    color: var(--color-error);
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Buttons */
+  .apex-btn-primary {
+    background-color: var(--apex-accent-cyan);
+    color: var(--apex-bg-surface);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 500; /* APEX guidelines suggest 500 */
+    padding: 0 24px;
+    border-radius: 6px;
+    height: 48px;
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    box-shadow: rgba(0, 220, 196, 0.25) 0px 0px 60px 0px;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .apex-btn-primary:hover:not(:disabled) {
+    box-shadow: rgba(0, 220, 196, 0.35) 0px 0px 80px 0px;
+    background-color: #00eed3;
+  }
+
+  .apex-btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  /* Checkbox Customization */
+  .apex-checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .apex-checkbox {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background-color: var(--apex-bg-card);
+    border: 1px solid var(--apex-border-interactive);
+    border-radius: 4px;
+    display: grid;
+    place-content: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .apex-checkbox::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1em 1em var(--apex-accent-cyan);
+    background-color: var(--apex-accent-cyan);
+    transform-origin: center;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  }
+
+  .apex-checkbox:checked {
+    border-color: var(--apex-accent-cyan);
+  }
+
+  .apex-checkbox:checked::before {
+    transform: scale(1);
+  }
+
+  .apex-checkbox-label {
+    font-size: 14px;
+    color: var(--apex-text-secondary);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  /* Navigation Links */
+  .apex-link {
+    color: var(--apex-text-tertiary);
+    font-size: 14px;
+    transition: color 0.2s ease, border-color 0.2s ease;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    cursor: pointer;
+  }
+
+  .apex-link:hover {
+    color: var(--apex-text-primary);
+    border-color: var(--apex-accent-cyan);
+  }
+
+  .apex-link-accent {
+    color: var(--apex-accent-cyan);
+    font-weight: 500;
+  }
+  
+  .apex-link-accent:hover {
+    color: #00eed3;
+  }
+
+  /* Loader Component */
+  .apex-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(27, 27, 27, 0.3);
+    border-top-color: var(--apex-bg-surface);
+    border-radius: 50%;
+    animation: apex-spin 0.8s linear infinite;
+  }
+
+  @keyframes apex-spin {
+    to { transform: rotate(360deg); }
+  }
 }
 

@@ -1,115 +1,151 @@
 import React, { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { Zap } from 'lucide-react';
+import { Zap, AlertCircle } from 'lucide-react';
 import { useAuth } from '../lib/AuthContext';
+import { motion, AnimatePresence } from 'motion/react';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const from = location.state?.from?.pathname || "/";
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateForm = () => {
+    if (!email) return "Email address is required";
+    if (!/^\S+@\S+\.\S+$/.test(email)) return "Please enter a valid email address";
+    if (!password) return "Password is required";
+    return "";
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email && password) {
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    try {
+      setError('');
+      setIsLoading(true);
+      // Simulate real backend auth request
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      if (password.length < 6) {
+        throw new Error("Invalid credentials. Try a longer password.");
+      }
+      
       login(email);
       navigate(from, { replace: true });
+    } catch (err: any) {
+      setError(err.message || 'Authentication failed. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#000000] flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans selection:bg-[#00e59b]/30">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md flex flex-col items-center">
-        <div className="w-12 h-12 bg-[#00e59b] rounded-md flex items-center justify-center mb-6">
-          <Zap className="w-6 h-6 text-black fill-black" />
+    <div className="apex-auth-wrapper">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="apex-auth-card"
+      >
+        <div className="apex-auth-brand">
+          <div className="w-12 h-12 bg-[#00DCC4] rounded-md flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(0,220,196,0.25)]">
+            <Zap className="w-6 h-6 text-[#1B1B1B] fill-[#1B1B1B]" />
+          </div>
+          <h1 className="apex-auth-title">
+            Sign in to APEX<span className="text-[#00DCC4] font-medium">OS</span>
+          </h1>
+          <p className="apex-auth-subtitle">
+            Or{' '}
+            <Link to="/signup" className="apex-link apex-link-accent">
+              create a new core ID
+            </Link>
+          </p>
         </div>
-        <h2 className="mt-2 text-center text-3xl font-bold tracking-tight text-white">
-          Sign in to APEX<span className="text-[#00e59b] font-medium">OS</span>
-        </h2>
-        <p className="mt-2 text-center text-sm text-[#a1a1aa]">
-          Or{' '}
-          <Link to="/signup" className="font-medium text-[#00e59b] hover:text-[#00e59b]/80 transition-colors">
-            create a new core ID
-          </Link>
-        </p>
-      </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-[#050505] border border-[#27272a] py-8 px-4 shadow rounded-xl sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-[#a1a1aa]">
-                Email address
-              </label>
-              <div className="mt-2">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full appearance-none rounded-md border border-[#27272a] bg-[#0b0c10] px-3 py-2 text-white placeholder-[#52525b] focus:border-[#00e59b] focus:outline-none focus:ring-1 focus:ring-[#00e59b] sm:text-sm transition-colors"
-                  placeholder="operator@apex.os"
-                />
-              </div>
-            </div>
+        <form onSubmit={handleSubmit}>
+          <div className="apex-form-group">
+            <label htmlFor="email" className="apex-form-label">
+              Email address
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => { setEmail(e.target.value); setError(''); }}
+              disabled={isLoading}
+              className={`apex-input ${error && !email ? 'has-error' : ''}`}
+              placeholder="operator@apex.os"
+              autoComplete="email"
+            />
+          </div>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-[#a1a1aa]">
-                Password
-              </label>
-              <div className="mt-2 text-right">
-              </div>
-              <div className="mt-0">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full appearance-none rounded-md border border-[#27272a] bg-[#0b0c10] px-3 py-2 text-white placeholder-[#52525b] focus:border-[#00e59b] focus:outline-none focus:ring-1 focus:ring-[#00e59b] sm:text-sm transition-colors"
-                />
-              </div>
-            </div>
+          <div className="apex-form-group">
+            <label htmlFor="password" className="apex-form-label">
+              <span>Password</span>
+              <a href="#" className="apex-link" tabIndex={-1}>
+                Forgot password?
+              </a>
+            </label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => { setPassword(e.target.value); setError(''); }}
+              disabled={isLoading}
+              className={`apex-input ${error && email && !password ? 'has-error' : ''}`}
+              placeholder="••••••••"
+              autoComplete="current-password"
+            />
+          </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 rounded border-[#27272a] bg-[#0b0c10] text-[#00e59b] focus:ring-[#00e59b] focus:ring-offset-0 focus:ring-offset-black accent-[#00e59b]"
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-[#a1a1aa]">
-                  Remember me
-                </label>
-              </div>
+          <div className="apex-checkbox-wrapper mb-6 mt-4">
+            <input type="checkbox" id="remember-me" className="apex-checkbox" />
+            <label htmlFor="remember-me" className="apex-checkbox-label">
+              Maintain secure session
+            </label>
+          </div>
 
-              <div className="text-sm">
-                <a href="#" className="font-medium text-[#00e59b] hover:text-[#00e59b]/80 transition-colors">
-                  Forgot your password?
-                </a>
-              </div>
-            </div>
-
-            <div>
-              <button
-                type="submit"
-                className="flex w-full justify-center rounded-md border border-transparent bg-[#00e59b] py-2.5 px-4 text-sm font-bold text-black shadow hover:bg-[#00e59b]/90 focus:outline-none focus:ring-2 focus:ring-[#00e59b] focus:ring-offset-2 focus:ring-offset-black transition-colors"
+          <AnimatePresence>
+            {error && (
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="apex-error-text mb-4"
               >
-                Sign in
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
+                <AlertCircle className="w-4 h-4" />
+                <span>{error}</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <button 
+            type="submit" 
+            disabled={isLoading}
+            className="apex-btn-primary mt-2"
+          >
+            {isLoading ? (
+              <>
+                <div className="apex-spinner" />
+                <span>Authenticating...</span>
+              </>
+            ) : (
+              <span>Initialize Session</span>
+            )}
+          </button>
+        </form>
+      </motion.div>
     </div>
   );
 }

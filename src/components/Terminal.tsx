@@ -25,6 +25,19 @@ const STREAM_CONFIG: Record<StreamType, { color: string, colorHex: string, label
   INTEGRATION: { color: 'text-[#8B5CF6]', colorHex: '#8B5CF6', label: '6: INTEGRATION' }
 };
 
+const getAgentThemeForPrefix = (prefix: string) => {
+  const p = prefix.toLowerCase();
+  if (p.includes('research')) return 'var(--agent-research, var(--agent-default))';
+  if (p.includes('design')) return 'var(--agent-design, var(--agent-default))';
+  if (p.includes('engineering') || p.includes('code') || p.includes('dev')) return 'var(--agent-engineering, var(--agent-default))';
+  if (p.includes('qa') || p.includes('validat')) return 'var(--agent-qa, var(--agent-default))';
+  if (p.includes('content') || p.includes('writer')) return 'var(--agent-content, var(--agent-default))';
+  if (p.includes('strategy') || p.includes('business')) return 'var(--agent-strategy, var(--agent-default))';
+  if (p.includes('community')) return 'var(--agent-community, var(--agent-default))';
+  if (p.includes('orion')) return 'var(--agent-orion, var(--agent-default))';
+  return 'var(--agent-engineering, var(--agent-default))';
+};
+
 const INITIAL_LOGS: LogEntry[] = [
   { id: '1', timestamp: '00:00:01', stream: 'WORKFLOW', prefix: 'WORKFLOW', message: 'idle → initializing' },
   { id: '2', timestamp: '00:00:02', stream: 'WORKFLOW', prefix: 'WORKFLOW', message: 'initializing → routing' },
@@ -184,6 +197,18 @@ export default function Terminal() {
   const hasRecovered = filteredLogs.some(l => l.prefix === 'AGENT ORION' && l.status === 'success' && l.message.includes('connection restored'));
   const isRecovering = hasPipelineError && !hasRecovered;
 
+  // Compute currently active agents based on the feed history up to replayIndex
+  const activeAgents = new Set<string>();
+  filteredLogs.forEach((log) => {
+    if (log.stream === 'AGENT') {
+      if (log.status === 'success' || log.status === 'error' || log.message.includes('completed')) {
+        activeAgents.delete(log.prefix);
+      } else {
+        activeAgents.add(log.prefix);
+      }
+    }
+  });
+
   return (
     <motion.footer 
       animate={
@@ -192,7 +217,7 @@ export default function Terminal() {
           : { boxShadow: 'inset 0 0 0px rgba(248,113,113,0)' }
       }
       transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-      className="h-64 border-t border-outline-variant bg-[#0b0c10] flex flex-col font-mono text-[11px] shrink-0 self-end w-full relative z-40 selection:bg-primary/30 overflow-hidden"
+      className="h-80 border-t border-outline-variant bg-[#0b0c10] flex flex-col font-mono text-[11px] shrink-0 self-end w-full relative z-40 selection:bg-primary/30 overflow-hidden"
     >
       <AnimatePresence>
         {isRecovering && (
@@ -275,6 +300,41 @@ export default function Terminal() {
         </div>
       </div>
       
+      {/* Heartbeat Monitoring Bar */}
+      <div className="h-8 border-b border-outline-variant/30 flex items-center px-4 gap-4 bg-[#0a0a0b] shrink-0">
+        <span className="text-[9px] text-outline tracking-widest uppercase font-bold flex items-center gap-2">
+          <Activity className="w-3 h-3 text-[#00DCC4]" />
+          Active Processing
+        </span>
+        <div className="flex-1 flex gap-3 overflow-x-auto scrollbar-hide py-1">
+          {Array.from(activeAgents).length === 0 ? (
+            <span className="text-[9px] text-outline/50 italic py-1">System idle</span>
+          ) : (
+            Array.from(activeAgents).map(agent => {
+              const theme = getAgentThemeForPrefix(agent);
+              return (
+                <motion.div 
+                  key={agent}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  className="px-2.5 py-0.5 rounded-full border bg-[#18181b] flex items-center gap-2 text-[9px] uppercase tracking-wider font-bold whitespace-nowrap shadow-sm"
+                  style={{ borderColor: theme, color: theme, boxShadow: `0 0 10px -2px ${theme}` }}
+                >
+                  <motion.div 
+                    animate={{ opacity: [0.3, 1, 0.3], scale: [0.95, 1.1, 0.95] }}
+                    transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
+                    className="w-1.5 h-1.5 rounded-full"
+                    style={{ backgroundColor: theme, boxShadow: `0 0 8px ${theme}` }}
+                  />
+                  {agent}
+                </motion.div>
+              );
+            })
+          )}
+        </div>
+      </div>
+      
       {/* Floating Control Panel */}
       <AnimatePresence>
         {showConfig && (
@@ -338,6 +398,7 @@ export default function Terminal() {
                  
                  {filterTab === 'AGENTS' && availableAgents.map(agent => {
                    const isVisible = visibleAgents.has(agent);
+                   const agentThemeColor = getAgentThemeForPrefix(agent);
                    return (
                      <button 
                        key={agent}
@@ -347,11 +408,11 @@ export default function Terminal() {
                          isVisible ? "bg-white/5 text-on-surface border-white/10" : "bg-transparent text-outline hover:bg-white/5 border-transparent hover:border-white/10"
                        )}
                      >
-                       <span className={cn("flex items-center gap-2 text-[#4F46E5]")}>
+                       <span className="flex items-center gap-2" style={{ color: agentThemeColor }}>
                          {isVisible ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
                          {agent}
                        </span>
-                       <div className="w-2 h-2 rounded-full" style={{ backgroundColor: isVisible ? '#4F46E5' : 'transparent' }} />
+                       <div className="w-2 h-2 rounded-full" style={{ backgroundColor: isVisible ? agentThemeColor : 'transparent' }} />
                      </button>
                    );
                  })}
@@ -461,12 +522,22 @@ export default function Terminal() {
             >
               <span className="text-[#52525b] shrink-0 w-20">[{log.timestamp}]</span>
               <div className="shrink-0 w-48 flex items-center gap-2">
-                <span className={cn(
-                  "font-bold",
-                  STREAM_CONFIG[log.stream].color,
-                  log.status === 'error' && "text-[#ef4444]",
-                  log.status === 'warn' && "text-[#eab308]"
-                )}>
+                <span 
+                  className={cn(
+                    "font-bold transition-all duration-300",
+                    log.stream !== 'AGENT' && STREAM_CONFIG[log.stream].color,
+                    log.status === 'error' && "!text-[#ef4444]",
+                    log.status === 'warn' && "!text-[#eab308]"
+                  )}
+                  style={
+                    log.stream === 'AGENT' && !log.status
+                      ? { 
+                          color: getAgentThemeForPrefix(log.prefix),
+                          textShadow: activeAgents.has(log.prefix) ? `0 0 10px ${getAgentThemeForPrefix(log.prefix)}` : 'none'
+                        } 
+                      : undefined
+                  }
+                >
                   [{log.prefix}]
                 </span>
                 {log.stream === 'AGENT' && log.latency && (

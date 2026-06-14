@@ -14,24 +14,22 @@ export default function ProjectWorkspace() {
   return (
     <div className="max-w-[1440px] mx-auto min-h-screen">
       {/* Project Header */}
-      <section className="mb-xl">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-md mb-lg">
-          <div>
-            <div className="flex items-center gap-sm mb-sm">
-              <span className="label-caps text-[10px] text-secondary px-sm py-[2px] bg-secondary/10 border border-secondary/20 rounded">ACTIVE PROJECT</span>
-              <span className="label-caps text-[10px] text-on-surface-variant/60">V0.9.2-BETA</span>
-            </div>
-            <h2 className="headline-lg text-on-surface mb-xs tracking-tight">Nova SaaS</h2>
-            <p className="body-md text-on-surface-variant max-w-2xl">Autonomous ecosystem for subscription-based architectures. Orchestrating agent workflows for rapid deployment and continuous design iteration.</p>
-          </div>
-          <div className="flex gap-sm w-full md:w-auto">
-            <button className="flex-1 md:flex-none px-lg py-sm bg-primary text-on-primary rounded-lg text-sm hover:scale-105 active:scale-95 transition-transform flex items-center justify-center gap-sm font-semibold">
-              <Play className="w-4 h-4 fill-current" />
-              Execute Workflow
+      <section className="mb-12">
+        <div className="text-center max-w-4xl mx-auto mb-12">
+          <span className="text-[#00E5C3] text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] block mb-4">// PROJECT SUITE</span>
+          <h1 className="text-3xl sm:text-5xl font-mono uppercase tracking-tight text-[#F2F5F4] font-bold mb-6">
+            Project Workspace
+          </h1>
+          <p className="text-[#93A8A1] text-sm sm:text-base leading-relaxed max-w-2xl mx-auto font-sans font-normal mb-8">
+            Decoupled orchestrations for core enclaves. Build, review, and compile pipelines with real-time feedback loops and automated versioning structures.
+          </p>
+          
+          <div className="flex items-center justify-center gap-3">
+            <button className="px-5 py-2.5 bg-[#00E5C3] hover:bg-[#00CFAE] text-[#02110E] transition-all rounded-sm text-xs font-mono uppercase tracking-wider flex items-center gap-2 cursor-pointer shadow-[0_0_15px_rgba(0,229,195,0.15)]">
+              <Play className="w-4 h-4 fill-current" /> Execute Workflow
             </button>
-            <button className="flex-1 md:flex-none px-lg py-sm bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface rounded-lg text-sm transition-colors flex items-center justify-center gap-sm active:scale-95">
-              <Settings className="w-4 h-4" />
-              Config
+            <button className="px-5 py-2.5 bg-[#071311] border border-[#12302A] hover:border-[#00CFAE] hover:text-[#00E5C3] transition-colors rounded-sm text-xs font-mono uppercase tracking-wider flex items-center gap-2 cursor-pointer">
+              <Settings className="w-4 h-4" /> Config
             </button>
           </div>
         </div>

@@ -6,19 +6,26 @@ export default function OpportunityRadar() {
     <div className="max-w-5xl mx-auto flex flex-col gap-xxl">
       
       {/* Hero Command */}
-      <section className="relative w-full rounded-xl overflow-hidden py-xl flex flex-col items-center justify-center text-center mt-xl">
-        <div className="relative z-10 max-w-2xl px-md w-full">
-          <span className="label-caps text-primary bg-primary/10 px-md py-xs rounded-full inline-block mb-md border border-primary/20">SYSTEM ACTIVE</span>
-          <h2 className="display-lg text-on-surface mb-lg">Memory & Opportunity Radar</h2>
-          
-          <div className="glass-panel rounded-full px-lg py-md flex items-center gap-md w-full max-w-xl mx-auto border border-primary/30 shadow-[0_0_30px_rgba(79,70,229,0.15)] bg-surface-container-lowest/80">
-            <Target className="w-5 h-5 text-primary" />
+      <section className="relative w-full text-center mb-16 mt-8">
+        <div className="text-center max-w-3xl mx-auto mb-10">
+          <span className="text-[#00E5C3] text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] block mb-4">// TELEMETRY SCANNER</span>
+          <h1 className="text-3xl sm:text-5xl font-mono uppercase tracking-tight text-[#F2F5F4] font-bold mb-6">
+            Opportunity Radar
+          </h1>
+          <p className="text-[#93A8A1] text-sm sm:text-base leading-relaxed max-w-2xl mx-auto font-sans font-normal">
+            Real-time memory intelligence and algorithmic market-fit discovery. Query live ecosystem vectors, recall strategic assets, or initiate instant compiler submissions.
+          </p>
+        </div>
+        
+        <div className="relative z-10 max-w-2xl px-4 w-full mx-auto">
+          <div className="bg-[#071311] rounded-sm px-6 py-4 flex items-center gap-4 w-full max-w-xl mx-auto border border-[#12302A] shadow-[0_0_20px_rgba(0,229,195,0.08)]">
+            <Target className="w-5 h-5 text-[#00E5C3]" />
             <input 
               type="text" 
-              className="bg-transparent border-none focus:ring-0 text-on-surface w-full body-sm placeholder:text-on-surface-variant/40 focus:outline-none"
+              className="bg-transparent border-none focus:ring-0 text-[#F2F5F4] w-full text-sm placeholder-[#93A8A1]/40 focus:outline-none font-mono"
               placeholder="Analyze current market vectors or recall assets..."
             />
-            <span className="px-sm py-1 bg-surface-container rounded border border-outline-variant/30 code-md text-[10px] text-on-surface-variant flex-shrink-0">
+            <span className="px-2 py-1 bg-[#020B0A] rounded border border-[#12302A] font-mono text-[10px] text-[#A1A1AA] flex-shrink-0 uppercase">
               CMD + K
             </span>
           </div>
@@ -27,12 +34,13 @@ export default function OpportunityRadar() {
 
       {/* Opportunity Radar Grid */}
       <section>
-        <div className="flex items-end justify-between mb-lg">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-4 border-b border-[#12302A] gap-4">
           <div>
-            <h3 className="headline-lg text-on-surface">Opportunity Radar</h3>
-            <p className="body-sm text-on-surface-variant">AI-driven market signal analysis</p>
+            <span className="text-[#00E5C3] text-[9px] font-mono uppercase tracking-[0.2em] block mb-1.5">// OPPORTUNITIES</span>
+            <h3 className="text-xl sm:text-2xl font-mono uppercase tracking-tight text-[#F2F5F4] font-bold">Active Targets</h3>
+            <p className="text-[#93A8A1] text-xs font-sans font-normal mt-0.5">AI-driven market signal analysis</p>
           </div>
-          <button className="flex items-center gap-xs text-primary label-caps group">
+          <button className="flex items-center gap-2 text-[#00E5C3] font-mono text-xs uppercase tracking-wider hover:text-[#00CFAE] transition-colors group cursor-pointer">
             SCAN LIVE FEED 
             <span className="group-hover:translate-x-1 transition-transform">→</span>
           </button>

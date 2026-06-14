@@ -17,12 +17,14 @@ export default function IntelligenceBrain() {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="mb-lg">
-        <h2 className="headline-lg text-on-surface mb-xs flex items-center gap-sm">
-          <BrainCircuit className="w-8 h-8 text-primary" />
-          Intelligence Brain
-        </h2>
-        <p className="body-sm text-on-surface-variant">Visualizing agent relationships and routing pathways.</p>
+      <div className="text-center max-w-3xl mx-auto mb-16 px-4">
+        <span className="text-[#00E5C3] text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] block mb-4">// BRAIN CORE</span>
+        <h1 className="text-3xl sm:text-5xl font-mono uppercase tracking-tight text-[#F2F5F4] font-bold mb-6 flex items-center justify-center gap-3">
+          <BrainCircuit className="w-10 h-10 text-[#00E5C3]" /> Intelligence Brain
+        </h1>
+        <p className="text-[#93A8A1] text-sm sm:text-base leading-relaxed max-w-2xl mx-auto font-sans font-normal">
+          Visualize real-time cognitive mapping and coordinate routing pathways. Track parallel relationships, token exchanges, and message telemetry inside ephemeral sandbox enclaves.
+        </p>
       </div>
 
       <div className="flex-1 glass-panel rounded-2xl border-primary/10 relative overflow-hidden flex items-center justify-center min-h-[500px]">

@@ -36,16 +36,22 @@ export default function ArtifactStudio() {
   return (
     <div className="flex flex-col h-full relative">
       <div className="p-8 pb-4">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-medium tracking-tight mb-2">Artifact Studio</h1>
-            <p className="text-on-surface-variant text-sm">Manage, version, and deploy generated assets and code modules.</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <button className="px-4 py-2 bg-surface-container-high border border-outline-variant hover:bg-surface-container-highest transition-colors rounded-md text-sm font-medium flex items-center gap-2 w-full md:w-auto active:scale-95 text-on-surface">
+        
+        {/* Artifact Studio Header */}
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <span className="text-[#00E5C3] text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] block mb-4">// ARTIFACTS</span>
+          <h1 className="text-3xl sm:text-5xl font-mono uppercase tracking-tight text-[#F2F5F4] font-bold mb-6">
+            Artifact Studio
+          </h1>
+          <p className="text-[#93A8A1] text-sm sm:text-base leading-relaxed max-w-2xl mx-auto font-sans font-normal mb-8">
+            Manage, version, and deploy generated templates, secure configurations, and type-safe code modules. Monitor changes, revert enclaves, and export assets instantly.
+          </p>
+          
+          <div className="flex items-center justify-center gap-3">
+            <button className="px-5 py-2.5 bg-[#071311] border border-[#12302A] hover:border-[#00CFAE] hover:text-[#00E5C3] transition-colors rounded-sm text-xs font-mono uppercase tracking-wider flex items-center gap-2 cursor-pointer">
               <Download className="w-4 h-4" /> Export All
             </button>
-            <button className="px-4 py-2 bg-on-surface text-background hover:bg-on-surface/90 transition-colors rounded-md text-sm font-medium flex items-center gap-2 w-full md:w-auto active:scale-95">
+            <button className="px-5 py-2.5 bg-[#00E5C3] hover:bg-[#00CFAE] text-[#02110E] transition-all rounded-sm text-xs font-mono uppercase tracking-wider flex items-center gap-2 cursor-pointer shadow-[0_0_15px_rgba(0,229,195,0.15)]">
               <Code className="w-4 h-4" /> New Artifact
             </button>
           </div>

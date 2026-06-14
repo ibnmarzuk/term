@@ -2,33 +2,33 @@
 @import "tailwindcss";
 
 @theme {
-  --color-surface: #0a0a0b;
-  --color-surface-dim: #0a0a0b;
-  --color-surface-bright: #141415;
-  --color-surface-container-lowest: #0a0a0b;
-  --color-surface-container-low: #0a0a0b;
-  --color-surface-container: #141415;
-  --color-surface-container-high: #1a1a1b;
-  --color-surface-container-highest: #27272a;
+  --color-surface: #071311;
+  --color-surface-dim: #020B0A;
+  --color-surface-bright: #0c231f;
+  --color-surface-container-lowest: #020B0A;
+  --color-surface-container-low: #030e0c;
+  --color-surface-container: #071311;
+  --color-surface-container-high: #0b1d1a;
+  --color-surface-container-highest: #0e2925;
   
-  --color-on-surface: #ededed;
-  --color-on-surface-variant: #a1a1aa;
-  --color-inverse-surface: #ededed;
-  --color-inverse-on-surface: #0a0a0b;
+  --color-on-surface: #F2F5F4;
+  --color-on-surface-variant: #93A8A1;
+  --color-inverse-surface: #F2F5F4;
+  --color-inverse-on-surface: #020B0A;
   
-  --color-outline: #71717a;
-  --color-outline-variant: #27272a;
+  --color-outline: #12302A;
+  --color-outline-variant: #1a423a;
   
-  --color-primary: #00e59b;
-  --color-on-primary: #000000;
-  --color-primary-container: #00e59b;
-  --color-on-primary-container: #000000;
-  --color-inverse-primary: #00875a;
+  --color-primary: #00E5C3;
+  --color-on-primary: #02110E;
+  --color-primary-container: #00E5C3;
+  --color-on-primary-container: #02110E;
+  --color-inverse-primary: #00CFAE;
   
-  --color-secondary: #34d399;
-  --color-on-secondary: #000000;
-  --color-secondary-container: #059669;
-  --color-on-secondary-container: #ffffff;
+  --color-secondary: #00CFAE;
+  --color-on-secondary: #02110E;
+  --color-secondary-container: #12302A;
+  --color-on-secondary-container: #F2F5F4;
   
   --color-tertiary: #f59e0b;
   --color-on-tertiary: #000000;
@@ -40,37 +40,37 @@
   --color-error-container: #dc2626;
   --color-on-error-container: #ffffff;
   
-  --color-background: #0a0a0b;
-  --color-on-background: #ededed;
+  --color-background: #020B0A;
+  --color-on-background: #F2F5F4;
 
   /* Agent Domain Colors */
-  --agent-engineering: #22d3ee; /* Cyan */
+  --agent-engineering: #00E5C3; /* Cyan */
   --agent-qa: #fb7185; /* Rose */
   --agent-research: #fbbf24; /* Amber */
   --agent-design: #c084fc; /* Purple */
-  --agent-content: #34d399; /* Emerald */
+  --agent-content: #00CFAE; /* Emerald */
   --agent-strategy: #f472b6; /* Pink */
   --agent-community: #facc15; /* Yellow */
   --agent-orion: #818cf8; /* Indigo */
-  --agent-default: #94a3b8; /* Slate */
+  --agent-default: #93A8A1; /* Slate */
 
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
-  --apex-bg-base: #000000;
-  --apex-bg-surface: #1B1B1B;
-  --apex-bg-card: #2A2A2E;
+  --apex-bg-base: #020B0A;
+  --apex-bg-surface: #071311;
+  --apex-bg-card: #071311;
   
-  --apex-accent-cyan: #00DCC4;
+  --apex-accent-cyan: #00E5C3;
   --apex-accent-purple: #575ECF;
   
-  --apex-text-primary: #FFFFFF;
-  --apex-text-secondary: #C5C1B9;
-  --apex-text-tertiary: #8B8680;
+  --apex-text-primary: #F2F5F4;
+  --apex-text-secondary: #93A8A1;
+  --apex-text-tertiary: #526661;
   
-  --apex-border-subtle: #3D3D42;
-  --apex-border-medium: #4A4A50;
-  --apex-border-interactive: #454545;
+  --apex-border-subtle: #12302A;
+  --apex-border-medium: #1b423a;
+  --apex-border-interactive: #12302A;
 
   --radius-sm: 0.25rem;
   --radius-md: 0.75rem;
@@ -276,8 +276,8 @@ body {
 
   /* Buttons */
   .apex-btn-primary {
-    background-color: var(--apex-accent-cyan);
-    color: var(--apex-bg-surface);
+    background-color: #00E5C3;
+    color: #02110E;
     font-family: var(--font-sans);
     font-size: 16px;
     font-weight: 500; /* APEX guidelines suggest 500 */
@@ -287,7 +287,7 @@ body {
     width: 100%;
     border: none;
     cursor: pointer;
-    box-shadow: rgba(0, 220, 196, 0.25) 0px 0px 60px 0px;
+    box-shadow: rgba(0, 229, 195, 0.15) 0px 0px 40px 0px;
     transition: all 0.2s ease;
     display: flex;
     justify-content: center;
@@ -296,8 +296,8 @@ body {
   }
 
   .apex-btn-primary:hover:not(:disabled) {
-    box-shadow: rgba(0, 220, 196, 0.35) 0px 0px 80px 0px;
-    background-color: #00eed3;
+    box-shadow: rgba(0, 229, 195, 0.25) 0px 0px 60px 0px;
+    background-color: #00CFAE;
   }
 
   .apex-btn-primary:disabled {

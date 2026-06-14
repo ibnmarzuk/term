@@ -60,17 +60,17 @@ export default function Contact() {
     <PublicLayout>
       <motion.div {...pageTransition} className="relative z-10 py-16 sm:py-24 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <span className="text-[#00DCC4] text-[10px] font-mono uppercase tracking-widest block mb-2">// TELEMETRY</span>
-          <h1 className="text-3xl sm:text-5xl font-mono uppercase tracking-tight text-white font-bold mb-4">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <span className="text-[#00E5C3] text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] block mb-4">// TELEMETRY</span>
+          <h1 className="text-3xl sm:text-5xl font-mono uppercase tracking-tight text-[#F2F5F4] font-bold mb-6">
             Initialize Contact.
           </h1>
-          <p className="text-[#C5C1B9] text-sm leading-relaxed">
+          <p className="text-[#93A8A1] text-sm sm:text-base leading-relaxed max-w-2xl mx-auto font-sans font-normal">
             Transmit questions, trial requests, or custom integration briefs directly into our secure pipeline.
           </p>
         </div>
 
-        <div className="bg-[#08080a] border border-[#1b1b1c] rounded-lg p-6 sm:p-10 shadow-[0_15px_40px_rgba(0,0,0,0.5)]">
+        <div className="bg-[#071311] border border-[#12302A] rounded-lg p-6 sm:p-10 shadow-[0_15px_40px_rgba(0,0,0,0.5)]">
           <AnimatePresence mode="wait">
             {!submitSuccess ? (
               <motion.form 
@@ -83,8 +83,10 @@ export default function Contact() {
               >
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {/* Name field */}
-                  <div className="apex-form-group">
-                    <label htmlFor="contact-name" className="apex-form-label">Name / Identity</label>
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="contact-name" className="text-xs uppercase font-mono tracking-wider font-semibold text-[#F2F5F4]">
+                      Name / Identity
+                    </label>
                     <input
                       id="contact-name"
                       type="text"
@@ -93,13 +95,15 @@ export default function Contact() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Operator Name"
-                      className="apex-input"
+                      className="w-full bg-[#020B0A] border border-[#12302A] focus:border-[#00E5C3] text-sm text-[#F2F5F4] placeholder-[#93A8A1]/40 px-3 py-2 rounded focus:outline-none transition-colors"
                     />
                   </div>
 
                   {/* Email field */}
-                  <div className="apex-form-group">
-                    <label htmlFor="contact-email" className="apex-form-label">Secure Email Address</label>
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="contact-email" className="text-xs uppercase font-mono tracking-wider font-semibold text-[#F2F5F4]">
+                      Secure Email Address
+                    </label>
                     <input
                       id="contact-email"
                       type="email"
@@ -108,20 +112,22 @@ export default function Contact() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="operator@agency.net"
-                      className="apex-input"
+                      className="w-full bg-[#020B0A] border border-[#12302A] focus:border-[#00E5C3] text-sm text-[#F2F5F4] placeholder-[#93A8A1]/40 px-3 py-2 rounded focus:outline-none transition-colors"
                     />
                   </div>
                 </div>
 
                 {/* Topic selector */}
-                <div className="apex-form-group">
-                  <label htmlFor="contact-topic" className="apex-form-label font-mono text-xs">Topic Channels</label>
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="contact-topic" className="text-xs uppercase font-mono tracking-wider font-semibold text-[#F2F5F4]">
+                    Topic Channels
+                  </label>
                   <select
                     id="contact-topic"
                     value={topic}
                     disabled={isSubmitting}
                     onChange={(e) => setTopic(e.target.value)}
-                    className="apex-input font-mono text-xs text-[#C5C1B9] bg-[#111113] border-[#222225] py-2 w-full rouded-md focus:border-[#00DCC4] outline-none"
+                    className="w-full bg-[#020B0A] border border-[#12302A] focus:border-[#00E5C3] text-xs font-mono text-[#93A8A1] px-3 py-2.5 rounded focus:outline-none transition-colors cursor-pointer"
                   >
                     <option value="integration">// CHANNEL_01 : SYSTEM_CUSTOM_INTEGRATIONS</option>
                     <option value="pricing">// CHANNEL_02 : BILLING_OPERATIONS_STATIONS</option>
@@ -131,8 +137,10 @@ export default function Contact() {
                 </div>
 
                 {/* Message text */}
-                <div className="apex-form-group">
-                  <label htmlFor="contact-message" className="apex-form-label">Message Outflow Payload</label>
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="contact-message" className="text-xs uppercase font-mono tracking-wider font-semibold text-[#F2F5F4]">
+                    Message Outflow Payload
+                  </label>
                   <textarea
                     id="contact-message"
                     required
@@ -141,18 +149,18 @@ export default function Contact() {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Provide details about your custom engineering brief or operational targets..."
-                    className="apex-input text-xs leading-relaxed"
+                    className="w-full bg-[#020B0A] border border-[#12302A] focus:border-[#00E5C3] text-xs leading-relaxed text-[#F2F5F4] placeholder-[#93A8A1]/40 px-3 py-2 rounded focus:outline-none transition-colors resize-y"
                   />
                 </div>
 
                 {/* Submit button / Terminal display logs */}
                 <div className="space-y-4 pt-4">
                   {terminalLogs.length > 0 && (
-                    <div className="bg-[#0b0b0d] border border-[#1b1b1c] rounded p-4 font-mono text-[10px] text-gray-400 space-y-1.5 max-h-40 overflow-y-auto">
-                      <p className="text-yellow-500 font-bold mb-1">// SECURE DISPATCH TELEMETRY SYSTEM</p>
+                    <div className="bg-[#020B0A] border border-[#12302A] rounded p-4 font-mono text-[10px] text-[#93A8A1] space-y-1.5 max-h-40 overflow-y-auto">
+                      <p className="text-[#00E5C3] font-bold mb-1">// SECURE DISPATCH TELEMETRY SYSTEM</p>
                       {terminalLogs.map((log, lIdx) => (
-                        <p key={lIdx} className="flex items-center gap-1.5 animate-fade-in">
-                          <Terminal className="w-3.5 h-3.5 text-[#00DCC4] flex-shrink-0" />
+                        <p key={lIdx} className="flex items-center gap-1.5 animate-fade-in text-xs">
+                          <Terminal className="w-3.5 h-3.5 text-[#00E5C3] flex-shrink-0" />
                           <span>{log}</span>
                         </p>
                       ))}
@@ -162,7 +170,7 @@ export default function Contact() {
                   <button
                     type="submit"
                     disabled={isSubmitting || !name || !email || !message}
-                    className="w-full sm:w-auto px-6 py-2.5 bg-[#00DCC4] hover:bg-[#00DCC4]/90 text-black text-xs font-mono font-bold rounded-sm uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-40 hover:shadow-[0_0_20px_rgba(0,220,196,0.3)]"
+                    className="w-full sm:w-auto px-6 py-2.5 bg-[#00E5C3] hover:bg-[#00CFAE] text-[#02110E] text-xs font-mono font-bold rounded-sm uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-40 hover:shadow-[0_0_20px_rgba(0,229,195,0.3)]"
                   >
                     {isSubmitting ? 'Transmitting Inbound...' : 'Transmit Payload Packet'} <Send className="w-3.5 h-3.5" />
                   </button>
@@ -175,19 +183,19 @@ export default function Contact() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="text-center py-8 space-y-6"
               >
-                <div className="w-16 h-16 bg-[#00DCC4]/10 rounded-full flex items-center justify-center mx-auto border border-[#00DCC4]/20 shadow-[0_0_25px_rgba(0,220,196,0.15)]">
-                  <Sparkles className="w-8 h-8 text-[#00DCC4]" />
+                <div className="w-16 h-16 bg-[#00E5C3]/10 rounded-full flex items-center justify-center mx-auto border border-[#00E5C3]/20 shadow-[0_0_25px_rgba(0,229,195,0.15)] animate-bounce">
+                  <Sparkles className="w-8 h-8 text-[#00E5C3]" />
                 </div>
                 
                 <div className="space-y-2">
-                  <h3 className="font-mono text-base text-white font-bold uppercase">Transmission Nominal</h3>
-                  <p className="text-xs text-[#8B8680] max-w-sm mx-auto leading-relaxed">
+                  <h3 className="font-mono text-base text-[#F2F5F4] font-bold uppercase">Transmission Nominal</h3>
+                  <p className="text-xs text-[#93A8A1] max-w-sm mx-auto leading-relaxed font-sans font-normal">
                     We have successfully synchronized your payload packet in our central queue stack. An APEX systems engineer will open a reply route to your security email inside the next hour.
                   </p>
                 </div>
 
-                <div className="bg-[#0b0b0d] border border-[#1c1c1f] rounded p-5 font-mono text-[10px] text-emerald-400/90 text-left max-w-sm mx-auto space-y-1">
-                  <p className="text-gray-500">// FINAL PACKET STATUS</p>
+                <div className="bg-[#020B0A] border border-[#12302A] rounded p-5 font-mono text-[10px] text-[#00E5C3] text-left max-w-sm mx-auto space-y-1">
+                  <p className="text-[#93A8A1]">// FINAL PACKET STATUS</p>
                   <p>✓ SOURCE COMPILER VERIFIED</p>
                   <p>✓ PAYLOAD SECURED BY SYMMETRIC ROTATION</p>
                   <p>✓ TARGET PIPELINE DISPATCH COMPLETE</p>
@@ -196,7 +204,7 @@ export default function Contact() {
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="px-6 py-2 bg-transparent border border-[#454545] hover:border-white text-white font-mono text-xs font-bold rounded-sm uppercase tracking-wider transition-all"
+                  className="px-6 py-2 bg-transparent border border-[#12302A] hover:border-[#00CFAE] text-[#F2F5F4] hover:text-[#00E5C3] font-mono text-xs font-bold rounded-sm uppercase tracking-wider transition-all"
                 >
                   Send another pipeline message
                 </button>

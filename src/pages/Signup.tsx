@@ -65,8 +65,8 @@ export default function Signup() {
     >
       <div className="apex-auth-card">
         <div className="apex-auth-brand">
-          <div className="w-12 h-12 bg-[#00DCC4] rounded-md flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(0,220,196,0.25)]">
-            <Zap className="w-6 h-6 text-[#1B1B1B] fill-[#1B1B1B]" />
+          <div className="w-12 h-12 bg-[#00E5C3] rounded-md flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(0,229,195,0.25)]">
+            <Zap className="w-6 h-6 text-[#02110E] fill-[#02110E]" />
           </div>
           <h1 className="apex-auth-title">
             Initialize Core ID

@@ -41,65 +41,65 @@ export default function CommandCenter() {
   ];
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-[calc(100vh-16rem)] p-8 relative scrollbar-hide pb-20">
+    <div className="flex flex-col items-center justify-start min-h-[calc(100vh-16rem)] p-8 relative scrollbar-hide pb-20 bg-[#020B0A]">
       
       {/* Real-time System Performance Monitor Header */}
       <div className="w-full max-w-5xl mb-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-[#2A2A2E] border border-[#4A4A50] rounded-xl p-5 flex flex-col gap-2">
-          <div className="flex items-center justify-between text-[#C5C1B9] text-[12px] font-mono uppercase tracking-widest">
-            <span className="flex items-center gap-1.5"><Activity className="w-3.5 h-3.5 text-[#00DCC4]" /> ACTIVE AGENTS</span>
-            <span className="text-[#00DCC4]">09</span>
+        <div className="bg-[#071311] border border-[#12302A] rounded-xl p-5 flex flex-col gap-2">
+          <div className="flex items-center justify-between text-[#93A8A1] text-[12px] font-mono uppercase tracking-widest">
+            <span className="flex items-center gap-1.5"><Activity className="w-3.5 h-3.5 text-[#00E5C3]" /> ACTIVE AGENTS</span>
+            <span className="text-[#00E5C3] font-bold">09</span>
           </div>
           <div className="flex items-end gap-3 mt-1">
-            <span className="text-4xl font-bold font-mono text-white leading-none">9</span>
-            <span className="text-[#8B8680] text-[13px] mb-1">units online</span>
+            <span className="text-4xl font-bold font-mono text-[#F2F5F4] leading-none">9</span>
+            <span className="text-[#93A8A1] text-[13px] mb-1">units online</span>
           </div>
           <div className="flex gap-2.5 mt-2">
              {['research', 'engineering', 'design', 'qa', 'strategy'].map(type => (
-                <div key={type} className="w-2 h-2 rounded-full shadow-[0_0_8px_rgba(0,220,196,0.5)] bg-[#00DCC4]" />
+                <div key={type} className="w-1.5 h-1.5 rounded-full shadow-[0_0_8px_rgba(0,229,195,0.5)] bg-[#00E5C3]" />
              ))}
           </div>
         </div>
 
-        <div className="bg-[#2A2A2E] border border-[#4A4A50] rounded-xl p-5 flex flex-col justify-between">
-          <div className="flex items-center justify-between text-[#C5C1B9] text-[12px] font-mono uppercase tracking-widest mb-2">
-            <span className="flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 text-[#575ECF]" /> PIPELINE LATENCY</span>
-            <span className="text-[#575ECF]">{Math.round(latencyData[latencyData.length - 1]?.value || 0)}ms</span>
+        <div className="bg-[#071311] border border-[#12302A] rounded-xl p-5 flex flex-col justify-between">
+          <div className="flex items-center justify-between text-[#93A8A1] text-[12px] font-mono uppercase tracking-widest mb-2">
+            <span className="flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 text-[#00E5C3]" /> PIPELINE LATENCY</span>
+            <span className="text-[#00E5C3] font-bold">{Math.round(latencyData[latencyData.length - 1]?.value || 0)}ms</span>
           </div>
           <div className="h-10 w-full mt-2">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={latencyData}>
-                <Line type="monotone" dataKey="value" stroke="#575ECF" strokeWidth={2} dot={false} isAnimationActive={false} />
+                <Line type="monotone" dataKey="value" stroke="#00E5C3" strokeWidth={2} dot={false} isAnimationActive={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="bg-[#2A2A2E] border border-[#4A4A50] rounded-xl p-5 flex flex-col justify-between">
-          <div className="flex items-center justify-between text-[#C5C1B9] text-[12px] font-mono uppercase tracking-widest mb-2">
-            <span className="flex items-center gap-1.5"><Cpu className="w-3.5 h-3.5 text-[#00DCC4]" /> RESOURCE UTIL</span>
-            <span className="text-[#00DCC4]">{Math.round(utilizationData[utilizationData.length - 1]?.value || 0)}%</span>
+        <div className="bg-[#071311] border border-[#12302A] rounded-xl p-5 flex flex-col justify-between">
+          <div className="flex items-center justify-between text-[#93A8A1] text-[12px] font-mono uppercase tracking-widest mb-2">
+            <span className="flex items-center gap-1.5"><Cpu className="w-3.5 h-3.5 text-[#00E5C3]" /> RESOURCE UTIL</span>
+            <span className="text-[#00E5C3] font-bold">{Math.round(utilizationData[utilizationData.length - 1]?.value || 0)}%</span>
           </div>
           <div className="h-10 w-full mt-2">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={utilizationData}>
-                <Line type="monotone" dataKey="value" stroke="#00DCC4" strokeWidth={2} dot={false} isAnimationActive={false} />
+                <Line type="monotone" dataKey="value" stroke="#00E5C3" strokeWidth={2} dot={false} isAnimationActive={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
       </div>
 
-      {/* Top Tag */}
-      <div className="flex items-center gap-2 mb-6">
-        <span className="text-[#00DCC4] text-[10px] uppercase font-bold tracking-widest">
-          // WORKFLOW
-        </span>
+      {/* CommandCenter Header */}
+      <div className="text-center max-w-3xl mx-auto mb-16">
+        <span className="text-[#00E5C3] text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] block mb-4">// WORKFLOW</span>
+        <h1 className="text-3xl sm:text-5xl font-mono uppercase tracking-tight text-[#F2F5F4] font-bold mb-6">
+          One Input. <span className="text-[#00E5C3]">Complete</span> Execution.
+        </h1>
+        <p className="text-[#93A8A1] text-sm sm:text-base leading-relaxed max-w-2xl mx-auto font-sans font-normal">
+          Interact with our coordinate-level parallel engines. Supply a single goal, brief, or repository to trigger isolated sandbox executions and generate live structural packages.
+        </p>
       </div>
-
-      <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-16 text-center">
-        One input. Complete execution.
-      </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl w-full mb-16 px-4">
         {steps.map((step, i) => (
@@ -107,16 +107,16 @@ export default function CommandCenter() {
             <div className="flex items-center gap-2 mb-4">
               <span className={cn(
                 "text-3xl font-black font-mono transition-colors",
-                activeStep === (i + 1) ? "text-[#00DCC4]" : "text-[#454545] group-hover:text-[#00DCC4]/50"
+                activeStep === (i + 1) ? "text-[#00E5C3]" : "text-[#12302A] group-hover:text-[#00E5C3]/55"
               )}>
                 {step.num}
               </span>
               {i < steps.length - 1 && (
-                <ArrowRight className="w-4 h-4 text-[#454545] ml-4" />
+                <ArrowRight className="w-4 h-4 text-[#12302A] ml-4 group-hover:translate-x-1 transition-transform" />
               )}
             </div>
-            <h3 className="text-white font-semibold text-sm mb-2">{step.title}</h3>
-            <p className="text-[#C5C1B9] text-[13px] leading-relaxed">
+            <h3 className="text-[#F2F5F4] font-semibold text-sm mb-2 font-mono uppercase">{step.title}</h3>
+            <p className="text-[#93A8A1] text-[13px] leading-relaxed font-sans font-normal">
               {step.desc}
             </p>
           </div>
@@ -124,8 +124,8 @@ export default function CommandCenter() {
       </div>
 
       {/* Terminal UI component Mock */}
-      <div className="w-full max-w-4xl bg-[#2A2A2E] border border-[#4A4A50] rounded-xl p-6">
-        <div className="text-[#8B8680] text-[11px] font-mono mb-4 flex items-center gap-2">
+      <div className="w-full max-w-4xl bg-[#071311] border border-[#12302A] rounded-xl p-6">
+        <div className="text-[#93A8A1] text-[11px] font-mono mb-4 flex items-center gap-2">
           $ apex.execute
         </div>
         <div className="flex flex-wrap gap-2">
@@ -133,21 +133,20 @@ export default function CommandCenter() {
             <div 
               key={tab}
               className={cn(
-                "flex-1 min-w-[120px] p-3 rounded-lg border border-[#3D3D42] flex justify-between items-end cursor-pointer transition-colors hover:border-[#454545]",
-                activeStep > (i * 4 / 6) && "bg-[#1B1B1B]/50 border-cyan-500/20",
-                "bg-[#1B1B1B]"
+                "flex-1 min-w-[120px] p-3 rounded-lg border flex justify-between items-end cursor-pointer transition-colors hover:border-[#00CFAE]",
+                activeStep > (i * 4 / 6) ? "bg-[#020B0A]/80 border-[#00E5C3]" : "bg-[#020B0A] border-[#12302A]"
               )}
               onClick={() => setActiveStep(Math.max(1, Math.ceil((i + 1) * 4 / 6)))}
             >
               <div className="flex flex-col gap-3 w-full">
-                <div className="flex justify-between items-center w-full">
-                  <span className="text-[10px] text-[#8B8680] font-mono leading-none">0{i + 1}</span>
+                <div className="flex justify-between items-center w-full font-mono">
+                  <span className="text-[10px] text-[#93A8A1] leading-none">0{i + 1}</span>
                   <div className={cn(
-                    "w-1.5 h-1.5 rounded-[9999px] transition-colors",
-                    activeStep > (i * 4 / 6) ? "bg-[#00DCC4] shadow-[0_0_10px_rgba(0,220,196,0.6)]" : "bg-[#454545]"
+                    "w-1.5 h-1.5 rounded-full transition-colors",
+                    activeStep > (i * 4 / 6) ? "bg-[#00E5C3] shadow-[0_0_10px_rgba(0,229,195,0.6)]" : "bg-[#12302A]"
                   )} />
                 </div>
-                <span className="text-[14px] text-[#FFFFFF] font-medium">{tab}</span>
+                <span className="text-[14px] text-[#F2F5F4] font-medium font-mono uppercase">{tab}</span>
               </div>
             </div>
           ))}

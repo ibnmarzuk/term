@@ -303,7 +303,7 @@ export default function Terminal() {
       {/* Heartbeat Monitoring Bar */}
       <div className="h-8 border-b border-outline-variant/30 flex items-center px-4 gap-4 bg-[#0a0a0b] shrink-0">
         <span className="text-[9px] text-outline tracking-widest uppercase font-bold flex items-center gap-2">
-          <Activity className="w-3 h-3 text-[#00DCC4]" />
+          <Activity className="w-3 h-3 text-[#00E5C3]" />
           Active Processing
         </span>
         <div className="flex-1 flex gap-3 overflow-x-auto scrollbar-hide py-1">

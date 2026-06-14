@@ -129,9 +129,14 @@ export default function TrackingBoard() {
       <div className="absolute inset-0 z-0 pointer-events-none opacity-25" style={{ backgroundImage: 'radial-gradient(var(--color-outline-variant) 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
       
       <div className="flex-1 flex flex-col gap-8 z-10 w-full">
-        <div>
-           <h1 className="text-3xl font-medium tracking-tight mb-2">Tracking Board</h1>
-           <p className="text-on-surface-variant text-sm">Monitor autonomous workflows, task ownership, and execution bottlenecks in real-time.</p>
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <span className="text-[#00E5C3] text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] block mb-4">// WORKFLOW TELEMETRY</span>
+          <h1 className="text-3xl sm:text-5xl font-mono uppercase tracking-tight text-[#F2F5F4] font-bold mb-6">
+            Tracking Board
+          </h1>
+          <p className="text-[#93A8A1] text-sm sm:text-base leading-relaxed max-w-2xl mx-auto font-sans font-normal">
+            Monitor autonomous orchestrations, task states, resource metrics, and process blocks. Reorganize pipelines dynamically in real-time.
+          </p>
         </div>
 
         {/* Workflow Graph View */}

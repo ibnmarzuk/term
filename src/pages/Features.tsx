@@ -9,7 +9,7 @@ export default function Features() {
   const engineDetails = [
     {
       id: 'research',
-      icon: <Search className="w-5 h-5 text-[#00DCC4]" />,
+      icon: <Search className="w-5 h-5 text-[#00E5C3]" />,
       name: 'RESEARCH ENGINE',
       version: 'v2.1',
       stats: '3,800 tokens/sec',
@@ -23,7 +23,7 @@ export default function Features() {
     },
     {
       id: 'strategy',
-      icon: <Target className="w-5 h-5 text-[#00DCC4]" />,
+      icon: <Target className="w-5 h-5 text-[#00E5C3]" />,
       name: 'STRATEGY ENGINE',
       version: 'v1.4',
       stats: '1,200 paths/sec',
@@ -37,7 +37,7 @@ export default function Features() {
     },
     {
       id: 'code',
-      icon: <Code2 className="w-5 h-5 text-[#00DCC4]" />,
+      icon: <Code2 className="w-5 h-5 text-[#00E5C3]" />,
       name: 'CODE ENGINE',
       version: 'v3.0',
       stats: 'Zero-warn synthesis',
@@ -51,21 +51,21 @@ export default function Features() {
     },
     {
       id: 'content',
-      icon: <FileText className="w-5 h-5 text-[#00DCC4]" />,
+      icon: <FileText className="w-5 h-5 text-[#00E5C3]" />,
       name: 'CONTENT ENGINE',
       version: 'v1.8',
       stats: '12,000 words/min',
       features: [
-        'Creates human-friendly, highly structured documentation guides.',
+        'Creates human-friendly, highly structured reference manuals.',
         'Generates social media content sets (Twitter threads, newsletters).',
         'Crafts technical READMEs and setup scripts.',
         'Organizes marketing pitch outlines and product listings.'
       ],
-      desc: 'Formulates beautiful, elegant copy, developer documentation, and press copy that is highly targeted and matches custom guidelines or developer styles.'
+      desc: 'Formulates beautiful, elegant copy, developer specifications, and press copy that is highly targeted and matches custom guidelines or developer styles.'
     },
     {
       id: 'multi-modal',
-      icon: <Layers className="w-5 h-5 text-[#00DCC4]" />,
+      icon: <Layers className="w-5 h-5 text-[#00E5C3]" />,
       name: 'MULTI-MODAL INPUT',
       version: 'v2.0',
       stats: '99.8% ingestion rate',
@@ -93,12 +93,12 @@ export default function Features() {
       <motion.div {...pageTransition} className="relative z-10 py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Features Header */}
-        <div className="max-w-3xl mb-16 text-left">
-          <span className="text-[#00DCC4] text-[10px] font-mono uppercase tracking-widest block mb-2">// TECHNICAL SPECS</span>
-          <h1 className="text-3xl sm:text-5xl font-mono uppercase tracking-tight text-white font-bold mb-6">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <span className="text-[#00E5C3] text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] block mb-4">// TECHNICAL SPECS</span>
+          <h1 className="text-3xl sm:text-5xl font-mono uppercase tracking-tight text-[#F2F5F4] font-bold mb-6">
             Engineered for pure delivery.
           </h1>
-          <p className="text-[#C5C1B9] text-sm sm:text-base leading-relaxed">
+          <p className="text-[#93A8A1] text-sm sm:text-base leading-relaxed max-w-2xl mx-auto font-sans font-normal">
             The APEX Core consists of five specialized systems working in lockstep. Each stage compiles its outputs for the next, wrapping up research, strategy, code, and content into unified deliverables.
           </p>
         </div>
@@ -108,28 +108,28 @@ export default function Features() {
           
           {/* Tab Selector Links */}
           <div className="lg:col-span-4 space-y-2">
-            <span className="font-mono text-[9px] uppercase tracking-wider text-[#8B8680] block mb-4">Select Core Engine</span>
+            <span className="font-mono text-[9px] uppercase tracking-wider text-[#93A8A1] block mb-4">Select Core Engine</span>
             {engineDetails.map((engine) => (
               <button
                 key={engine.id}
                 onClick={() => setActiveTab(engine.id)}
                 className={`w-full text-left px-5 py-4 rounded border transition-all flex items-center justify-between ${
                   activeTab === engine.id
-                    ? 'bg-[#111] border-[#00DCC4] text-white shadow-[0_0_15px_rgba(0,220,196,0.05)] font-bold'
-                    : 'bg-transparent border-[#1b1b1b] text-[#8B8680] hover:bg-[#0c0c0c] hover:border-[#333]'
+                    ? 'bg-[#071311] border-[#00E5C3] text-[#F2F5F4] shadow-[0_0_15px_rgba(0,229,195,0.05)] font-bold'
+                    : 'bg-transparent border-[#12302A] text-[#93A8A1] hover:bg-[#071311] hover:border-[#00CFAE]'
                 }`}
               >
                 <span className="font-mono text-xs tracking-wider flex items-center gap-3">
                   {engine.icon}
                   {engine.name}
                 </span>
-                <span className="font-mono text-[10px] text-[#575ECF] font-bold">{engine.version}</span>
+                <span className="font-mono text-[10px] text-[#00E5C3] font-bold">{engine.version}</span>
               </button>
             ))}
           </div>
 
           {/* Active Tab Panel */}
-          <div className="lg:col-span-8 bg-[#08080a] border border-[#1b1b1c] p-8 sm:p-10 rounded-lg min-h-[350px] flex flex-col justify-between">
+          <div className="lg:col-span-8 bg-[#071311] border border-[#12302A] p-8 sm:p-10 rounded-lg min-h-[350px] flex flex-col justify-between">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
@@ -140,34 +140,34 @@ export default function Features() {
                 className="space-y-6"
               >
                 {/* Panel head */}
-                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#1b1b1c] pb-4">
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#12302A] pb-4">
                   <div className="flex items-center gap-3">
-                    <span className="p-2 bg-[#00DCC4]/10 rounded border border-[#00DCC4]/20 text-[#00DCC4]">
+                    <span className="p-2 bg-[#00E5C3]/10 rounded border border-[#12302A] text-[#00E5C3]">
                       {currentTabDetails.icon}
                     </span>
                     <div>
-                      <h3 className="font-mono text-sm text-white font-bold">{currentTabDetails.name}</h3>
-                      <p className="text-[10px] font-mono text-[#8B8680] mt-0.5">Core Protocol Access: Active</p>
+                      <h3 className="font-mono text-sm text-[#F2F5F4] font-bold">{currentTabDetails.name}</h3>
+                      <p className="text-[10px] font-mono text-[#93A8A1] mt-0.5">Core Protocol Access: Active</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <span className="font-mono text-[10px] text-[#00DCC4] block">PERFORMANCE RATE</span>
-                    <span className="font-mono text-xs text-white font-bold">{currentTabDetails.stats}</span>
+                    <span className="font-mono text-[10px] text-[#00E5C3] block">PERFORMANCE RATE</span>
+                    <span className="font-mono text-xs text-[#F2F5F4] font-bold">{currentTabDetails.stats}</span>
                   </div>
                 </div>
 
                 {/* Description */}
-                <p className="text-[#C5C1B9] text-xs sm:text-sm leading-relaxed font-sans">
+                <p className="text-[#93A8A1] text-xs sm:text-sm leading-relaxed font-sans font-normal">
                   {currentTabDetails.desc}
                 </p>
 
                 {/* Features Checklist */}
                 <div>
-                  <span className="font-mono text-[9px] uppercase tracking-wider text-[#8B8680] block mb-3">Key Technical Targets</span>
-                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-[#C5C1B9]">
+                  <span className="font-mono text-[9px] uppercase tracking-wider text-[#93A8A1] block mb-3">Key Technical Targets</span>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-[#93A8A1]">
                     {currentTabDetails.features.map((feat, fIdx) => (
-                      <li key={fIdx} className="flex items-start gap-2">
-                        <ShieldCheck className="w-4 h-4 text-[#00DCC4] flex-shrink-0 mt-0.5" />
+                      <li key={fIdx} className="flex items-start gap-2 font-normal">
+                        <ShieldCheck className="w-4 h-4 text-[#00E5C3] flex-shrink-0 mt-0.5" />
                         <span>{feat}</span>
                       </li>
                     ))}
@@ -176,23 +176,25 @@ export default function Features() {
               </motion.div>
             </AnimatePresence>
 
-            <div className="border-t border-[#1b1b1c] pt-6 mt-8 flex items-center justify-between text-[10px] font-mono text-[#8B8680]">
+            <div className="border-t border-[#12302A] pt-6 mt-8 flex items-center justify-between text-[10px] font-mono text-[#93A8A1]">
               <span>STATUS: NOMINAL ENGINE TEMPERATURE</span>
-              <span className="text-[#00DCC4] font-bold">// ENCLAVE READY</span>
+              <span className="text-[#00E5C3] font-bold">// ENCLAVE READY</span>
             </div>
           </div>
 
         </div>
 
         {/* Global Pipeline Statistics Box */}
-        <div className="bg-[#111113] border border-[#222225] p-8 sm:p-12 rounded-lg text-center">
-          <h3 className="font-mono text-xs text-[#00DCC4] uppercase tracking-widest mb-4 font-bold">// SECURE COMPILATION SYSTEM</h3>
-          <h2 className="text-xl sm:text-3xl font-mono uppercase tracking-tight text-white font-bold max-w-xl mx-auto mb-6">
-            Zero dependencies on third party visual chats.
-          </h2>
-          <p className="text-[#8B8680] text-xs max-w-lg mx-auto leading-relaxed">
-            Every build compiles internally, lints automatically, and submits. We isolate our compilers from third party outages or API latency spikes.
-          </p>
+        <div className="bg-[#071311] border border-[#12302A] p-8 sm:p-12 rounded-lg text-center max-w-4xl mx-auto">
+          <div className="text-center max-w-2xl mx-auto mb-2">
+            <span className="text-[#00E5C3] text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] block mb-4">// SECURE COMPILATION</span>
+            <h2 className="text-xl sm:text-3xl font-mono uppercase tracking-tight text-[#F2F5F4] font-bold mb-6">
+              Zero dependencies on third party visual chats.
+            </h2>
+            <p className="text-[#93A8A1] text-xs sm:text-sm leading-relaxed max-w-xl mx-auto font-sans font-normal">
+              Every build compiles internally, lints automatically, and submits. We isolate our compilers from third party outages or API latency spikes.
+            </p>
+          </div>
         </div>
 
       </motion.div>

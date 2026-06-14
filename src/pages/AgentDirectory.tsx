@@ -91,15 +91,17 @@ export default function AgentDirectory() {
   return (
     <div className="flex flex-col h-full overflow-y-auto p-8 scrollbar-hide pb-20">
       
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-        <div>
-           <div className="flex items-center gap-2 mb-4">
-             <span className="text-[#00e59b] text-[10px] uppercase font-bold tracking-widest">// WORKFORCE</span>
-           </div>
-           <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-2">ACTIVE AGENTS (9)</h1>
-           <p className="text-[#a1a1aa] text-[13px]">Configure, monitor, and deploy your specialized workforce.</p>
-        </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-[#27272a] hover:bg-[#3f3f46] text-white transition-colors rounded-md text-[13px] font-medium w-fit border border-[#3f3f46]">
+      <div className="text-center max-w-3xl mx-auto mb-16">
+        <span className="text-[#00E5C3] text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] block mb-4">// WORKFORCE</span>
+        <h1 className="text-3xl sm:text-5xl font-mono uppercase tracking-tight text-[#F2F5F4] font-bold mb-6">
+          Active Workforce
+        </h1>
+        <p className="text-[#93A8A1] text-sm sm:text-base leading-relaxed max-w-2xl mx-auto font-sans font-normal">
+          Configure, monitor, and deploy specialized autonomous enclaves. Our agents decouple complex tasks to execute parallel research, design, engineering, and deployment briefs in real-time.
+        </p>
+      </div>
+      <div className="flex justify-center mb-10">
+        <button className="flex items-center gap-2 px-5 py-2.5 bg-[#071311] hover:bg-[#00E5C3] hover:text-[#02110E] text-[#F2F5F4] transition-all rounded-sm text-xs font-mono uppercase tracking-wider border border-[#12302A] cursor-pointer hover:shadow-[0_0_15px_rgba(0,229,195,0.15)]">
           <Plus className="w-4 h-4" /> Deploy New Agent
         </button>
       </div>

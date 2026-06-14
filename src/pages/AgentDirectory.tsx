@@ -1,184 +1,422 @@
-import { motion } from 'motion/react';
-import { Network, LayoutTemplate, PenTool, Code, FileText, Type, BarChart, TrendingUp, Users, Plus } from 'lucide-react';
+import React, { useState } from 'react';
+import { 
+  Code, Shield, Activity, FileText, Layout, Paintbrush, TrendingUp, Search, 
+  FileJson, Database, Cpu, Layers, Users, Settings, Network, BarChart, 
+  UserCheck, Briefcase, Headphones, LineChart, BookOpen, Plus, Sparkles, Filter 
+} from 'lucide-react';
+import { cn } from '../lib/utils';
+
+interface Agent {
+  name: string;
+  role: string;
+  icon: React.ComponentType<any>;
+  department: 'engineering' | 'design' | 'product' | 'marketing' | 'content' | 'data' | 'operations' | 'customer';
+  expertise: string[];
+  deliverables: string[];
+  sample: string;
+}
+
+const DEPARTMENTS = [
+  { id: 'all', name: 'All Departments' },
+  { id: 'engineering', name: 'Engineering' },
+  { id: 'design', name: 'Design' },
+  { id: 'product', name: 'Product' },
+  { id: 'marketing', name: 'Marketing' },
+  { id: 'content', name: 'Content' },
+  { id: 'data', name: 'Data Space' },
+  { id: 'operations', name: 'Operations' },
+  { id: 'customer', name: 'Customer Success' }
+];
+
+const AGENTS_LIST: Agent[] = [
+  // Engineering Department
+  {
+    name: "Software Engineer",
+    role: "Core runtime architecture and system integration",
+    icon: Code,
+    department: "engineering",
+    expertise: ["TypeScript", "Rust", "Distributed State"],
+    deliverables: ["Package bundler config", "Clean runtime wrappers", "Process architecture design"],
+    sample: "Configuring container ports: isolated environment sandbox successfully initiated."
+  },
+  {
+    name: "Frontend Engineer",
+    role: "SaaS interface and visual layout execution",
+    icon: Layout,
+    department: "engineering",
+    expertise: ["React 19", "Vite", "Tailwind CSS"],
+    deliverables: ["Responsive layout files", "Optimized animation modules", "Visual system assets"],
+    sample: "Compiling design tokens. Generated responsive grid blocks with smooth viewport adaptive bounds."
+  },
+  {
+    name: "Backend Engineer",
+    role: "Schema optimization and API gateway protocol",
+    icon: Database,
+    department: "engineering",
+    expertise: ["Express.js", "Drizzle ORM", "Secure REST Handshakes"],
+    deliverables: ["Database schemas", "Proxy route controllers", "Access control lists"],
+    sample: "Schema migrator nominal. Connected isolated persistent DB tier with sub-millisecond connection speeds."
+  },
+  {
+    name: "DevOps Engineer",
+    role: "Decoupled pipeline deployment and CI/CD actions",
+    icon: Settings,
+    department: "engineering",
+    expertise: ["Vercel CLI", "Docker", "Sovereign Clusters"],
+    deliverables: ["CI/CD configuration files", "Server-start handlers", "Container ingress specs"],
+    sample: "Decoupled ingress layers matched. Redirecting reverse-proxy protocols to secure, ephemeral Cloud gateways."
+  },
+  {
+    name: "AI Engineer",
+    role: "Gemini API modeling and cognitive parsing",
+    icon: Cpu,
+    department: "engineering",
+    expertise: ["Google GenAI SDK", "Structured JSON generation", "Few-shot schemas"],
+    deliverables: ["Intelligent prompt pipelines", "Execution router maps", "Latency log parsers"],
+    sample: "Adaptive model routing triggered: response mapped to type-safe client parameters."
+  },
+  {
+    name: "Security Engineer",
+    role: "Isolated sandbox audit and sanitization lockouts",
+    icon: Shield,
+    department: "engineering",
+    expertise: ["Injection defense", "Ephemeral sandbox audits", "Key masking"],
+    deliverables: ["Vulnerability scans", "Environment handshake sanitizers", "Hand-off secure logs"],
+    sample: "Sanitized input fields. Key strings masked to prevent context exposure to public browsers."
+  },
+  {
+    name: "QA Engineer",
+    role: "System-wide unit parsing and validation enclaves",
+    icon: Activity,
+    department: "engineering",
+    expertise: ["TypeScript compile checks", "Endpoint mock testing", "Pipeline safety linting"],
+    deliverables: ["Linter exception audits", "Test suite logs", "Performance regressions"],
+    sample: "Validating directory schemas. Checking tsconfig rules for compile-ready production packages."
+  },
+  {
+    name: "AI Tester",
+    role: "Autonomous model output verification and edge case parser",
+    icon: UserCheck,
+    department: "engineering",
+    expertise: ["Hallucination filters", "Boundary parsing", "Robust token checks"],
+    deliverables: ["Synthesized payloads", "Model alignment logs", "Output accuracy ratios"],
+    sample: "Running multi-turn mock inputs. Cognitive continuity verified across 10 virtual iterations."
+  },
+
+  // Design Department
+  {
+    name: "UI Designer",
+    role: "Figma-standard spatial layouts and clean negative space",
+    icon: Layout,
+    department: "design",
+    expertise: ["Modern micro-spacing", "High-contrast themes", "Bento grid rhythm"],
+    deliverables: ["Color variables JSON", "Adaptive border tokens", "Interactive cards specs"],
+    sample: "Typography scales paired. Set Space Grotesk display headers over high-contrast slate surfaces."
+  },
+  {
+    name: "UX Designer",
+    role: "User-flow optimization and cognitive load reduction",
+    icon: Network,
+    department: "design",
+    expertise: ["User journeys", "Iframe responsive loops", "Input-action maps"],
+    deliverables: ["Stepwise flow charts", "Interaction state cards", "User validation notes"],
+    sample: "Proposal step counts reduced. Interactive workflow triggered in 3 minimal screen stages."
+  },
+  {
+    name: "Graphic Designer",
+    role: "Professional startup branding and minimal geometric layout",
+    icon: Paintbrush,
+    department: "design",
+    expertise: ["SaaS wordmarks", "Vector SVG abstractions", "Clean display grids"],
+    deliverables: ["Primary raw SVGs", "High-contrast visual assets", "Social layouts"],
+    sample: "Generated secure intelligence abstract marks. Exported 100% scalable vector brand modules."
+  },
+  {
+    name: "Brand Designer",
+    role: "Corporate systems consistency and identity rules",
+    icon: BookOpen,
+    department: "design",
+    expertise: ["Aesthetic styleguides", "Sovereign themes", "Motion timelines"],
+    deliverables: ["Brand identity packages", "Asset layout rules", "SVG launcher icons"],
+    sample: "Formulating cohesive space-tech guidelines. Synchronized color ranges across desktop and mobile structures."
+  },
+  {
+    name: "Design QA",
+    role: "Visual precision tracking and spacing audit",
+    icon: Layers,
+    department: "design",
+    expertise: ["Pixel inspections", "Contrast standards", "Layout consistency"],
+    deliverables: ["Contrast ratio audits", "Radius alignment logs", "Responsive screen diagnostics"],
+    sample: "Inspecting padding constraints. Unified responsive grid gaps for ultra-wide screen density."
+  },
+
+  // Product Department
+  {
+    name: "Product Manager",
+    role: "Vision-to-PRD breakdown and execution sequence planning",
+    icon: Briefcase,
+    department: "product",
+    expertise: ["Product spec sheets", "Prerequisite mapping", "Orchestration trees"],
+    deliverables: ["Detailed PRDs", "Feature list specs", "Functional step-trees"],
+    sample: "Translating loose objectives. Segmented mission parameters to decouple strategic dependencies."
+  },
+  {
+    name: "Startup Strategist",
+    role: "Venture validation and capital efficiency mapping",
+    icon: TrendingUp,
+    department: "product",
+    expertise: ["Competitor matrixes", "Economic structures", "Market timing analytics"],
+    deliverables: ["Validation scorecards", "Strategic options brief", "SaaS pricing blueprints"],
+    sample: "Competitor overlaps mapped. Sized DeFi integration routes to locate prime economic arbitrage."
+  },
+  {
+    name: "Requirements Analyst",
+    role: "Constraint mapping and edge-case classification",
+    icon: FileText,
+    department: "product",
+    expertise: ["Feature boundary checks", "Compliance blueprints", "Scope reduction rules"],
+    deliverables: ["Minimal viable scope", "Dependency matrix logs", "Audit-ready requirements"],
+    sample: "Analyzing potential system blocks. Refined MVP parameters to achieve 15-minute deployment timelines."
+  },
+
+  // Marketing Department
+  {
+    name: "Growth Agent",
+    role: "Referral mechanics and customer-acquisition loops",
+    icon: BarChart,
+    department: "marketing",
+    expertise: ["Self-sustaining loops", "Analytics setups", "Feature flags growth"],
+    deliverables: ["Loop diagrams", "Custom analytics telemetry", "Call-to-action logs"],
+    sample: "Engineered growth reward handshakes. Tracking custom activation triggers across protected signups."
+  },
+  {
+    name: "SEO Specialist",
+    role: "Content indexing and search visibility blueprints",
+    icon: Search,
+    department: "marketing",
+    expertise: ["Sitemap structures", "Query-intent mapping", "Metadata variables"],
+    deliverables: ["Sitemap XML plans", "Search keyword catalogs", "Core Web Vitals blueprints"],
+    sample: "Structured metadata variables. Formulating localized head keywords for developer workspaces."
+  },
+  {
+    name: "Social Media Manager",
+    role: "Strategic launch scheduling and narrative delivery",
+    icon: Users,
+    department: "marketing",
+    expertise: ["Interactive thread schemas", "Telemetry logs tracking", "Distribution grids"],
+    deliverables: ["Narrative catalogs", "Scheduled release grids", "Engagement handbooks"],
+    sample: "Launch thread structured. Delivery scheduled to coordinate with sovereign community windows."
+  },
+
+  // Content Department
+  {
+    name: "Content Creator",
+    role: "Engaging technical narratives and startup positioning copy",
+    icon: FileText,
+    department: "content",
+    expertise: ["Copy composition", "Visual storytelling", "Creative writing rules"],
+    deliverables: ["Pitch draft files", "Announcement copy blocks", "SaaS marketing layouts"],
+    sample: "Drafting corporate manifesto. Anchoring text blocks to convey speed, trust, and execution-first power."
+  },
+  {
+    name: "Technical Writer",
+    role: "Markdown setup manuals, README files, and API docs",
+    icon: BookOpen,
+    department: "content",
+    expertise: ["Detailed API reference", "Copy-paste guides", "Instruction specs"],
+    deliverables: ["Project READMEs", "System-setup manuals", "API payload handbooks"],
+    sample: "README updated inside root. Formulating explicit step-by-step guidelines for ephemeral developer setups."
+  },
+
+  // Data Department
+  {
+    name: "Data Analyst",
+    role: "Telemetry aggregation and pipeline throughput math",
+    icon: LineChart,
+    department: "data",
+    expertise: ["Log calculations", "Anomaly pattern checks", "Recharts configuration"],
+    deliverables: ["Visual chart tables", "Latency stats files", "Throughput analytics"],
+    sample: "Processing 10,000 telemetry packets. Sized latency deviations at +0.02ms across Router enclaves."
+  },
+
+  // Operations Department
+  {
+    name: "Automation Agent",
+    role: "Trigger-based background workers and MCP event handlers",
+    icon: Sparkles,
+    department: "operations",
+    expertise: ["Scheduled event loops", "Chaining algorithms", "Event-based systems"],
+    deliverables: ["Event rules files", "Workflow connection scripts", "Background daemon templates"],
+    sample: "Monitoring background tasks. Action triggered instantly on target repository commit notification."
+  },
+
+  // Customer Department
+  {
+    name: "Support Agent",
+    role: "Self-healing documentation search and error resolution guide",
+    icon: Headphones,
+    department: "customer",
+    expertise: ["Knowledgebase matching", "Error log parsing", "Diagnostics"],
+    deliverables: ["Self-service diagnostics", "Error catalog matches", "Continuity transcripts"],
+    sample: "Error log parsed: trace matched to missing API environment variable. Directing user to settings."
+  }
+];
 
 export default function AgentDirectory() {
-  const agents = [
-    {
-      name: "Research Analyst",
-      role: "Market & landscape intelligence",
-      icon: Network,
-      type: "research",
-      expertise: ["Competitive analysis", "Market sizing", "Trend mapping"],
-      deliverables: ["Research brief", "Competitor matrix", "Opportunity map"],
-      sample: `"Researched 12 voting dApps, identified 3 unmet UX patterns, sized the Solana DAO market at 4.2k active treasuries."`
-    },
-    {
-      name: "Product Designer",
-      role: "UX flows and interaction design",
-      icon: LayoutTemplate,
-      type: "design",
-      expertise: ["User flows", "IA", "Interaction patterns"],
-      deliverables: ["Flow diagrams", "Wireframes", "Component specs"],
-      sample: `"Mapped a 3-step proposal flow with a single-screen voting modal."`
-    },
-    {
-      name: "Graphic Designer",
-      role: "Visual identity and brand assets",
-      icon: PenTool,
-      type: "design",
-      expertise: ["Logo systems", "Color & type", "Marketing visuals"],
-      deliverables: ["Logo lockups", "Color tokens", "Social cards"],
-      sample: `"Built a 5-color minimal palette with a wordmark and 3 social templates."`
-    },
-    {
-      name: "Software Engineer",
-      role: "Code generation & architecture",
-      icon: Code,
-      type: "engineering",
-      expertise: ["Full-stack TS", "Smart contracts", "DevOps"],
-      deliverables: ["File tree", "Source files", "Deployment notes"],
-      sample: `"Shipped a Next.js + Anchor scaffold with 27 files and a one-click Vercel config."`
-    },
-    {
-      name: "Technical Writer",
-      role: "READMEs, API docs, developer onboarding",
-      icon: FileText,
-      type: "content",
-      expertise: ["Dev docs", "Tutorials", "Reference"],
-      deliverables: ["README", "Setup guide", "API reference"],
-      sample: `"Drafted a 5-minute quickstart with copy-paste env setup."`
-    },
-    {
-      name: "Content Writer",
-      role: "Long-form & narrative content",
-      icon: Type,
-      type: "content",
-      expertise: ["Articles", "Launch threads", "Pitch copy"],
-      deliverables: ["Launch thread", "Article", "Submission pitch"],
-      sample: `"Wrote an 8-tweet launch thread and a 300-word feature article."`
-    },
-    {
-      name: "Business Developer",
-      role: "Partnerships & revenue surfaces",
-      icon: BarChart,
-      type: "strategy",
-      expertise: ["Partnership mapping", "Outreach"],
-      deliverables: ["Partner list", "Outreach drafts"],
-      sample: `"Identified 5 potential integration partners in the DeFi space."`
-    },
-    {
-      name: "Growth Strategist",
-      role: "Positioning & GTM",
-      icon: TrendingUp,
-      type: "strategy",
-      expertise: ["Positioning", "Acquisition loops", "Metrics"],
-      deliverables: ["Positioning brief", "GTM plan", "Metrics"],
-      sample: `"Designed a referral loop projecting a 15% WoW growth rate."`
-    },
-    {
-      name: "Community Manager",
-      role: "Community ops & engagement",
-      icon: Users,
-      type: "community",
-      expertise: ["Discord/X strategy", "Programs"],
-      deliverables: ["Comms calendar", "Engagement playbook"],
-      sample: `"Drafted a 4-week engagement plan for managing beta tester feedback."`
-    }
-  ];
+  const [selectedDept, setSelectedDept] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
-  const getAgentColor = (type: string) => `var(--agent-${type}, var(--agent-default))`;
+  const filteredAgents = AGENTS_LIST.filter(agent => {
+    const matchesDept = selectedDept === 'all' || agent.department === selectedDept;
+    const matchesSearch = agent.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          agent.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          agent.expertise.some(e => e.toLowerCase().includes(searchQuery.toLowerCase()));
+    return matchesDept && matchesSearch;
+  });
+
+  const getDeptColor = (dept: string) => {
+    switch (dept) {
+      case 'engineering': return '#00E5C3';
+      case 'design': return '#c084fc';
+      case 'product': return '#f472b6';
+      case 'marketing': return '#fbbf24';
+      case 'content': return '#00CFAE';
+      case 'data': return '#818cf8';
+      case 'operations': return '#fb7185';
+      case 'customer': return '#facc15';
+      default: return '#93A8A1';
+    }
+  };
 
   return (
-    <div className="flex flex-col h-full overflow-y-auto p-8 scrollbar-hide pb-20">
-      
-      <div className="text-center max-w-3xl mx-auto mb-16">
-        <span className="text-[#00E5C3] text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] block mb-4">// WORKFORCE</span>
+    <div className="flex flex-col h-full overflow-y-auto p-4 sm:p-8 scrollbar-hide pb-20 bg-[#020B0A] relative">
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-20" style={{ backgroundImage: 'radial-gradient(#12302A 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
+
+      {/* Header section */}
+      <div className="text-center max-w-4xl mx-auto mb-12 relative z-10">
+        <span className="text-[#00E5C3] text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] block mb-4">// AGENT REGISTRY</span>
         <h1 className="text-3xl sm:text-5xl font-mono uppercase tracking-tight text-[#F2F5F4] font-bold mb-6">
-          Active Workforce
+          Agent Ecosystem
         </h1>
-        <p className="text-[#93A8A1] text-sm sm:text-base leading-relaxed max-w-2xl mx-auto font-sans font-normal">
-          Configure, monitor, and deploy specialized autonomous enclaves. Our agents decouple complex tasks to execute parallel research, design, engineering, and deployment briefs in real-time.
+        <p className="text-[#93A8A1] text-sm sm:text-base leading-relaxed max-w-2xl mx-auto font-sans font-normal mb-8">
+          Deploy specialized parallel units across 8 core departments. Each agent communicates through type-safe schema Handshakes, executing sandboxed instructions matching PRD v1.5 standards.
         </p>
-      </div>
-      <div className="flex justify-center mb-10">
-        <button className="flex items-center gap-2 px-5 py-2.5 bg-[#071311] hover:bg-[#00E5C3] hover:text-[#02110E] text-[#F2F5F4] transition-all rounded-sm text-xs font-mono uppercase tracking-wider border border-[#12302A] cursor-pointer hover:shadow-[0_0_15px_rgba(0,229,195,0.15)]">
-          <Plus className="w-4 h-4" /> Deploy New Agent
-        </button>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-8">
-        {agents.map((agent, i) => (
-          <div 
-            key={agent.name}
-            className="bg-[#0b0c10] border border-[#27272a] rounded-xl p-5 flex flex-col group transition-all duration-300 hover:border-[var(--hover-border-color)]"
-            style={{ 
-              ['--hover-border-color' as any]: getAgentColor(agent.type) 
-            }}
-          >
-            {/* Header Content */}
-            <div className="flex items-start gap-4 mb-6">
-              <div 
-                className="w-10 h-10 rounded-md bg-[#050505] border flex items-center justify-center shrink-0 transition-colors"
-                style={{ 
-                  borderColor: 'var(--hover-border-color)',
-                  color: 'var(--hover-border-color)' 
-                }}
-              >
-                <agent.icon className="w-5 h-5" />
-              </div>
-              <div className="flex flex-col pt-1">
-                <h3 className="text-white font-semibold text-[15px] leading-tight">
-                  {agent.name}
-                </h3>
-                <p className="text-[#a1a1aa] text-[13px] mt-1">
-                  {agent.role}
-                </p>
-              </div>
-            </div>
-            
-            {/* Expertise */}
-            <div className="mb-6">
-              <div className="text-[10px] uppercase font-bold tracking-widest text-[#71717a] mb-3">
-                EXPERTISE
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {agent.expertise.map((exp, j) => (
-                  <span 
-                    key={j} 
-                    className="px-2 py-1.5 rounded text-[11px] font-medium bg-[#18181b] border border-[#27272a]"
-                    style={{ color: 'var(--hover-border-color)' }}
-                  >
-                    {exp}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Deliverables */}
-            <div className="mb-6">
-              <div className="text-[10px] uppercase font-bold tracking-widest text-[#71717a] mb-3">
-                DELIVERABLES
-              </div>
-              <ul className="text-[13px] text-[#e4e4e7] space-y-2">
-                {agent.deliverables.map((item, j) => (
-                  <li key={j} className="flex items-center gap-2 before:content-['•']" style={{ ['--tw-content' as any]: '"•"', color: 'var(--hover-border-color)' }}>
-                    <span className="text-[#e4e4e7]">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Sample */}
-            <div className="mt-auto pt-4 border-t border-[#27272a]">
-              <div className="text-[10px] uppercase font-bold tracking-widest text-[#71717a] mb-3">
-                SAMPLE
-              </div>
-              <p className="text-[13px] text-[#a1a1aa] italic leading-relaxed">
-                {agent.sample}
-              </p>
-            </div>
+        {/* Search controls inside header */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-2xl mx-auto bg-[#071311] border border-[#12302A] p-2.5 rounded-lg">
+          <div className="flex items-center gap-2 flex-1 w-full px-3">
+            <Search className="w-4 h-4 text-[#93A8A1]" />
+            <input 
+              type="text" 
+              placeholder="Search agents, specifications, or competencies..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="bg-transparent text-sm text-[#F2F5F4] outline-none w-full placeholder:text-[#526661] font-sans"
+            />
           </div>
+          <button className="w-full sm:w-auto px-5 py-2 bg-[#00E5C3] hover:bg-[#00CFAE] text-[#02110E] transition-all rounded text-xs font-mono uppercase tracking-wider flex items-center justify-center gap-2 font-bold cursor-pointer hover:shadow-[0_0_15px_rgba(0,229,195,0.2)]">
+            <Plus className="w-3.5 h-3.5" /> Deploy Agent
+          </button>
+        </div>
+      </div>
+
+      {/* Departments Filter Bar */}
+      <div className="w-full max-w-6xl mx-auto mb-10 overflow-x-auto scrollbar-hide py-2 border-b border-[#12302A] flex gap-1.5 whitespace-nowrap relative z-10">
+        {DEPARTMENTS.map(dept => (
+          <button
+            key={dept.id}
+            onClick={() => setSelectedDept(dept.id)}
+            className={cn(
+              "px-4 py-2 border rounded-full text-xs font-mono uppercase tracking-wider transition-all duration-250 cursor-pointer",
+              selectedDept === dept.id 
+                ? "bg-[#00E5C3]/10 border-[#00E5C3] text-[#00E5C3] shadow-[0_0_12px_rgba(0,229,195,0.1)]" 
+                : "border-[#12302A] text-[#93A8A1] bg-[#071311]/20 hover:border-[#93A8A1]/30 hover:text-white"
+            )}
+          >
+            {dept.name}
+          </button>
         ))}
+      </div>
+
+      {/* Grid listing */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto w-full relative z-10 pb-16">
+        {filteredAgents.length === 0 ? (
+          <div className="col-span-full py-16 border border-dashed border-[#12302A] rounded-xl flex flex-col items-center justify-center text-center bg-[#071311]/20">
+            <Filter className="w-10 h-10 text-[#526661] mb-4" />
+            <h3 className="font-mono text-sm text-[#F2F5F4] uppercase tracking-wider mb-1 font-bold">No Agents Matched</h3>
+            <p className="text-[#93A8A1] text-xs max-w-xs leading-relaxed font-sans">
+              Adjust your department filter or clarify search parameters to match active APEX enclaves.
+            </p>
+          </div>
+        ) : (
+          filteredAgents.map((agent, i) => {
+            const AgentIcon = agent.icon;
+            const deptColor = getDeptColor(agent.department);
+            return (
+              <div 
+                key={`${agent.name}-${i}`}
+                className="bg-[#071311] border border-[#12302A] hover:border-[var(--card-glow-color)] p-6 rounded-xl flex flex-col group transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.4)]"
+                style={{ ['--card-glow-color' as any]: deptColor }}
+              >
+                {/* Header info */}
+                <div className="flex items-start gap-4 mb-5">
+                  <div 
+                    className="w-10 h-10 rounded border flex items-center justify-center shrink-0 transition-all group-hover:scale-105"
+                    style={{ borderColor: `${deptColor}30`, backgroundColor: `${deptColor}05`, color: deptColor }}
+                  >
+                    <AgentIcon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-[#F2F5F4] font-mono text-xs uppercase tracking-wider font-bold mb-1 leading-tight">{agent.name}</h3>
+                    <span 
+                      className="text-[9px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded"
+                      style={{ color: deptColor, backgroundColor: `${deptColor}10`, border: `1px solid ${deptColor}20` }}
+                    >
+                      {agent.department}
+                    </span>
+                    <p className="text-[#93A8A1] text-xs font-sans mt-3 leading-relaxed leading-normal">{agent.role}</p>
+                  </div>
+                </div>
+
+                {/* Competencies */}
+                <div className="mb-5 border-t border-[#12302A]/50 pt-4">
+                  <span className="text-[9px] font-mono text-[#526661] uppercase tracking-widest block mb-2 font-bold">COMPETENCIES</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {agent.expertise.map((exp, expIdx) => (
+                      <span 
+                        key={expIdx}
+                        className="px-2 py-0.5 rounded bg-[#020B0A] text-[10px] font-mono border border-[#12302A] text-[#93A8A1]"
+                      >
+                        {exp}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Deliverables */}
+                <div className="mb-5 border-t border-[#12302A]/50 pt-4">
+                  <span className="text-[9px] font-mono text-[#526661] uppercase tracking-widest block mb-2 font-bold">DELIVERABLES</span>
+                  <ul className="text-xs text-[#93A8A1] space-y-1.5">
+                    {agent.deliverables.map((item, delIdx) => (
+                      <li key={delIdx} className="flex items-center gap-2">
+                        <span className="w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: deptColor }} />
+                        <span className="font-sans text-[11px] font-normal leading-normal">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Command Feedback */}
+                <div className="mt-auto pt-4 border-t border-[#12302A]/50 flex flex-col gap-1.5">
+                  <span className="text-[9px] font-mono text-[#526661] uppercase tracking-widest block font-bold">ROUTER FEEDBACK</span>
+                  <p className="text-[11px] font-mono text-[#F2F5F4] italic leading-normal bg-[#020B0A] p-2.5 rounded border border-[#12302A]/60">
+                    &gt; "{agent.sample}"
+                  </p>
+                </div>
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );

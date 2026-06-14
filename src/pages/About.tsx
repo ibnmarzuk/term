@@ -89,10 +89,10 @@ export default function About() {
         </div>
 
         {/* Team banner */}
-        <div className="border border-[#12302A] bg-[#071311] p-8 sm:p-12 rounded flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="flex-1 w-full text-center md:text-left">
-            <h3 className="font-mono text-sm text-[#F2F5F4] uppercase tracking-wider mb-2 font-semibold">Join the Core OS Movement</h3>
-            <p className="text-[#93A8A1] text-xs max-w-lg leading-relaxed font-sans font-normal mx-auto md:mx-0">
+        <div className="border border-[#12302A] bg-[#071311] p-8 sm:p-12 rounded flex flex-col items-center justify-center gap-8 text-center">
+          <div className="w-full max-w-3xl">
+            <h3 className="font-mono text-sm text-[#F2F5F4] uppercase tracking-wider mb-4 font-semibold">Join the Core OS Movement</h3>
+            <p className="text-[#93A8A1] text-sm leading-relaxed font-sans font-normal">
               We are an agile group of systems engineers, compilers, and machine intelligence specialists operating out of Zurich and San Francisco. Let us know if you want to support or construct our next isolated runtime architectures.
             </p>
           </div>

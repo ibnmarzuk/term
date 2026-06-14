@@ -200,7 +200,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                 APEX <span className="text-[#00E5C3] text-[9px] bg-[#00E5C3]/10 px-1.5 py-0.5 rounded border border-[#12302A]">OS</span>
               </span>
             </Link>
-            <p className="text-[#93A8A1] text-xs sm:text-sm leading-relaxed max-w-xl mx-auto font-sans font-normal">
+            <p className="text-[#93A8A1] text-xs sm:text-sm leading-relaxed max-w-3xl mx-auto font-sans font-normal">
               Autonomous agent pipeline delivering production-ready, fully verified intelligence packages on demand. Not another conversational chatbot.
             </p>
             <div className="flex items-center justify-center gap-4 pt-2 text-[#93A8A1]">

@@ -32,10 +32,10 @@ export default function Landing() {
       desc: 'Our multi-threaded engines analyze specifications, research trends, and design structures simultaneously.',
       terminalHeader: '$ apex.pipeline --monitor --active',
       terminalOutput: [
-        '⚙️ [INTELLIGENCE ENGINE] Mapping industry standards...',
-        '⚙️ [STRATEGY ENGINE] Formulating step-by-step modular plan...',
-        '⚙️ [CODE ENGINE] Provisioning type-safe container runtimes...',
-        '⚙️ [ANALYSIS_ACTIVE]'
+        '[INTELLIGENCE SPEED] Mapping industry standards...',
+        '[STRATEGY NODE] Formulating step-by-step modular plan...',
+        '[CODE CONTAINER] Provisioning type-safe container runtimes...',
+        '[ANALYSIS_ACTIVE]'
       ]
     },
     {
@@ -44,10 +44,10 @@ export default function Landing() {
       desc: 'Get compiled source branches, precise technical manuals, strategy blueprints, and launch assets.',
       terminalHeader: '$ apex.generate --package=full_bundle_release_v1_0',
       terminalOutput: [
-        '✨ Build ready: /dist/package.zip',
-        '✨ Included: /build/architecture_blueprint.json',
-        '✨ Included: /src/auth/secure_vault_handshake.tsx',
-        '✨ Included: /tests/vault_handshake.test.ts'
+        '[BUILD] Build ready: /dist/package.zip',
+        '[BUILD] Included: /build/architecture_blueprint.json',
+        '[BUILD] Included: /src/auth/secure_vault_handshake.tsx',
+        '[BUILD] Included: /tests/vault_handshake.test.ts'
       ]
     },
     {
@@ -56,10 +56,10 @@ export default function Landing() {
       desc: 'Deploy direct to your repository, download raw bundles, or hand-off key modules immediately.',
       terminalHeader: '$ apex.ship --destination=github-release',
       terminalOutput: [
-        '🚀 Consolidating production-ready modules...',
-        '🚀 Injecting codebases directly to deployment branch...',
-        '🚀 Package successfully delivered.',
-        '🚀 Execution completed in 18.2 seconds.'
+        '[SHIP] Consolidating production-ready modules...',
+        '[SHIP] Injecting codebases directly to deployment branch...',
+        '[SHIP] Package successfully delivered.',
+        '[SHIP] Execution completed in 18.2 seconds.'
       ]
     }
   ];

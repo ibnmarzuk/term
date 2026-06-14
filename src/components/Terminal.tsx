@@ -114,6 +114,50 @@ export default function Terminal() {
   }, []);
 
   useEffect(() => {
+    const handleMissionTrigger = (e: Event) => {
+      const customEvent = e as CustomEvent<{ missionText: string }>;
+      const task = customEvent.detail?.missionText || "Optimize Pipeline";
+      
+      const currentTime = () => {
+        const d = new Date();
+        return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
+      };
+
+      const missionLogs: LogEntry[] = [
+        { id: `m-${Date.now()}-1`, timestamp: currentTime(), stream: 'WORKFLOW', prefix: 'WORKFLOW', message: `Initializing mission pipeline: "${task}"` },
+        { id: `m-${Date.now()}-2`, timestamp: currentTime(), stream: 'ROUTER', prefix: 'ROUTER', message: 'Analyzing target requirements. Sizing context window constraints.' },
+        { id: `m-${Date.now()}-3`, timestamp: currentTime(), stream: 'ROUTER', prefix: 'ROUTER', message: 'Task broken down: 4 sub-modules created. Confidence score: 99%.' },
+        { id: `m-${Date.now()}-4`, timestamp: currentTime(), stream: 'COUNCIL', prefix: 'STRATEGY COUNCIL', message: 'Council review approved. Security metrics authorized.', status: 'success' },
+        { id: `m-${Date.now()}-5`, timestamp: currentTime(), stream: 'AGENT', prefix: 'RESEARCH AGENT', message: 'Scanning similar open-source blueprints on GitHub.', latency: '15ms' },
+        { id: `m-${Date.now()}-6`, timestamp: currentTime(), stream: 'AGENT', prefix: 'RESEARCH AGENT', message: 'Data packaged into context memory block.', status: 'success', latency: '400ms' },
+        { id: `m-${Date.now()}-7`, timestamp: currentTime(), stream: 'AGENT', prefix: 'DESIGN AGENT', message: 'Provisioning color range token files to match UX spec.', latency: '8ms' },
+        { id: `m-${Date.now()}-8`, timestamp: currentTime(), stream: 'AGENT', prefix: 'SOFTWARE ENGINEER', message: 'Generating system endpoints inside container...', latency: '50ms' },
+        { id: `m-${Date.now()}-9`, timestamp: currentTime(), stream: 'ARTIFACT', prefix: 'ARTIFACT', message: 'Output generated: /src/components/SecureRouter.tsx', status: 'success' },
+        { id: `m-${Date.now()}-10`, timestamp: currentTime(), stream: 'AGENT', prefix: 'QA AGENT', message: 'Running lint parsing tests inside sandbox...', latency: '3ms' },
+        { id: `m-${Date.now()}-11`, timestamp: currentTime(), stream: 'AGENT', prefix: 'QA AGENT', message: 'Zero lint warnings found. Verification nominal.', status: 'success', latency: '120ms' },
+        { id: `m-${Date.now()}-12`, timestamp: currentTime(), stream: 'INTEGRATION', prefix: 'DEPLOYMENT', message: 'Injecting live build target outputs to production proxy Vercel.', status: 'success' },
+        { id: `m-${Date.now()}-13`, timestamp: currentTime(), stream: 'WORKFLOW', prefix: 'WORKFLOW', message: 'Mission execution finished successfully!', status: 'success' }
+      ];
+
+      // Reset logs to a single initial entry then append newly simulated mission logs
+      setLogs([{ id: `m-init`, timestamp: currentTime(), stream: 'WORKFLOW', prefix: 'WORKFLOW', message: 'idle → initializing' }]);
+      setReplayIndex(0);
+
+      let delay = 300;
+      missionLogs.forEach((log, index) => {
+        setTimeout(() => {
+          setLogs(prev => [...prev, log]);
+          setReplayIndex(prevIdx => prevIdx + 1);
+        }, delay);
+        delay += (index === 3 || index === 7) ? 1400 : 700;
+      });
+    };
+
+    window.addEventListener('apex-mission-trigger' as any, handleMissionTrigger);
+    return () => window.removeEventListener('apex-mission-trigger' as any, handleMissionTrigger);
+  }, []);
+
+  useEffect(() => {
     if (scrollRef.current && (!isReplaying || replayIndex === logs.length - 1)) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }

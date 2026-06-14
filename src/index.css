@@ -19,11 +19,11 @@
   --color-outline: #71717a;
   --color-outline-variant: #27272a;
   
-  --color-primary: #3b82f6;
-  --color-on-primary: #ffffff;
-  --color-primary-container: #3b82f6;
-  --color-on-primary-container: #ffffff;
-  --color-inverse-primary: #93c5fd;
+  --color-primary: #00e59b;
+  --color-on-primary: #000000;
+  --color-primary-container: #00e59b;
+  --color-on-primary-container: #000000;
+  --color-inverse-primary: #00875a;
   
   --color-secondary: #34d399;
   --color-on-secondary: #000000;

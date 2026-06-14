@@ -1,4 +1,4 @@
-import { Activity, Terminal as TerminalIcon, CircleDot, Cpu, Settings2, Eye, EyeOff } from 'lucide-react';
+import { Activity, Terminal as TerminalIcon, CircleDot, Cpu, Settings2, Eye, EyeOff, Download, Play, Pause, Rewind } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useState, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
@@ -56,62 +56,157 @@ const INITIAL_LOGS: LogEntry[] = [
 export default function Terminal() {
   const [logs, setLogs] = useState<LogEntry[]>(INITIAL_LOGS);
   const [visibleStreams, setVisibleStreams] = useState<Set<StreamType>>(new Set(Object.keys(STREAM_CONFIG) as StreamType[]));
+  const [visibleSeverities, setVisibleSeverities] = useState<Set<string>>(new Set(['info', 'success', 'warn', 'error']));
+  const availableAgents = Array.from(new Set(INITIAL_LOGS.filter(l => l.stream === 'AGENT').map(l => l.prefix).concat(['AGENT VEX'])));
+  const [visibleAgents, setVisibleAgents] = useState<Set<string>>(new Set(availableAgents));
   const [showConfig, setShowConfig] = useState(false);
+  const [filterTab, setFilterTab] = useState<'STREAMS' | 'SEVERITY' | 'AGENTS'>('STREAMS');
   const scrollRef = useRef<HTMLDivElement>(null);
+  
+  // Replay State
+  const [isReplaying, setIsReplaying] = useState(false);
+  const [replayIndex, setReplayIndex] = useState(INITIAL_LOGS.length - 1);
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
 
+  // Sync replayIndex when logs add to keep it pegged to the end unless we are replaying
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    if (!isReplaying && replayIndex >= logs.length - 2) {
+      setReplayIndex(logs.length - 1);
     }
-  }, [logs, visibleStreams]);
+  }, [logs.length, isReplaying]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const errorLog: LogEntry = {
-        id: '26',
-        timestamp: '00:00:42',
-        stream: 'AGENT',
-        prefix: 'AGENT VEX',
-        message: 'Critical error during integration testing pipeline. Execution halted.',
-        status: 'error',
-        latency: '1240ms'
-      };
-      setLogs(prev => [...prev, errorLog]);
-      toast.error('Critical Error in Agent Stream', {
-        description: errorLog.message,
-        duration: 8000,
+    const errorTimer = setTimeout(() => {
+      const errorLogs: LogEntry[] = [
+        { id: '26', timestamp: '00:00:42', stream: 'ROUTER', prefix: 'ROUTER', message: 'ERROR: Pipeline connection lost in Router Engine.', status: 'error', latency: '1240ms' },
+        { id: '27', timestamp: '00:00:43', stream: 'WORKFLOW', prefix: 'WORKFLOW', message: 'paused / recovering', status: 'warn' },
+        { id: '28', timestamp: '00:00:44', stream: 'ROUTER', prefix: 'ROUTER', message: 're-evaluating execution path', status: 'warn' },
+        { id: '29', timestamp: '00:00:45', stream: 'AGENT', prefix: 'AGENT ORION', message: 'fallback sequence initiated...', status: 'warn', latency: '24ms' },
+        { id: '30', timestamp: '00:00:48', stream: 'AGENT', prefix: 'AGENT ORION', message: 'connection restored. resuming task execution.', status: 'success', latency: '3200ms' },
+      ];
+      
+      let delay = 0;
+      errorLogs.forEach((log) => {
+        setTimeout(() => {
+          setLogs(prev => [...prev, log]);
+        }, delay);
+        // Stagger logs
+        delay += (log.stream === 'ROUTER' && log.status === 'error') ? 500 : 
+                 (log.stream === 'AGENT' && log.status === 'success') ? 2000 : 1000;
       });
-    }, 15000);
 
-    return () => clearTimeout(timer);
+    }, 8000);
+
+    return () => clearTimeout(errorTimer);
   }, []);
 
-  const filteredLogs = logs.filter(l => visibleStreams.has(l.stream));
+  useEffect(() => {
+    if (scrollRef.current && (!isReplaying || replayIndex === logs.length - 1)) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [logs, visibleStreams, replayIndex, isReplaying]);
+
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval>;
+    if (isReplaying) {
+      interval = setInterval(() => {
+        setReplayIndex(prev => {
+          if (prev >= logs.length - 1) {
+            setIsReplaying(false);
+            return prev;
+          }
+          return prev + 1;
+        });
+      }, 1000 / playbackSpeed);
+    }
+    return () => clearInterval(interval);
+  }, [isReplaying, playbackSpeed, logs.length]);
+
+  const filteredLogs = logs.slice(0, replayIndex + 1).filter(l => {
+    if (!visibleStreams.has(l.stream)) return false;
+    if (!visibleSeverities.has(l.status || 'info')) return false;
+    if (l.stream === 'AGENT' && !visibleAgents.has(l.prefix)) return false;
+    return true;
+  });
 
   const toggleStream = (stream: StreamType) => {
     setVisibleStreams(prev => {
       const next = new Set(prev);
-      if (next.has(stream)) {
-        next.delete(stream);
-      } else {
-        next.add(stream);
-      }
+      if (next.has(stream)) next.delete(stream);
+      else next.add(stream);
+      return next;
+    });
+  };
+
+  const toggleSeverity = (sev: string) => {
+    setVisibleSeverities(prev => {
+      const next = new Set(prev);
+      if (next.has(sev)) next.delete(sev);
+      else next.add(sev);
+      return next;
+    });
+  };
+
+  const toggleAgent = (agent: string) => {
+    setVisibleAgents(prev => {
+      const next = new Set(prev);
+      if (next.has(agent)) next.delete(agent);
+      else next.add(agent);
       return next;
     });
   };
 
   const toggleAll = () => {
-    if (visibleStreams.size === Object.keys(STREAM_CONFIG).length) {
-      setVisibleStreams(new Set());
-    } else {
-      setVisibleStreams(new Set(Object.keys(STREAM_CONFIG) as StreamType[]));
+    if (filterTab === 'STREAMS') {
+      if (visibleStreams.size === Object.keys(STREAM_CONFIG).length) setVisibleStreams(new Set());
+      else setVisibleStreams(new Set(Object.keys(STREAM_CONFIG) as StreamType[]));
+    } else if (filterTab === 'SEVERITY') {
+      if (visibleSeverities.size === 4) setVisibleSeverities(new Set());
+      else setVisibleSeverities(new Set(['info', 'success', 'warn', 'error']));
+    } else if (filterTab === 'AGENTS') {
+      if (visibleAgents.size === availableAgents.length) setVisibleAgents(new Set());
+      else setVisibleAgents(new Set(availableAgents));
     }
   };
 
+  const exportLogs = () => {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(logs, null, 2));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "execution_logs.json");
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+    toast.success('Logs exported successfully');
+  };
+
+  const hasPipelineError = filteredLogs.some(l => l.status === 'error' && l.message.includes('Pipeline connection lost'));
+  const hasRecovered = filteredLogs.some(l => l.prefix === 'AGENT ORION' && l.status === 'success' && l.message.includes('connection restored'));
+  const isRecovering = hasPipelineError && !hasRecovered;
+
   return (
-    <footer className="h-64 border-t border-outline-variant bg-[#0b0c10] flex flex-col font-mono text-[11px] shrink-0 self-end w-full relative z-40 selection:bg-primary/30">
+    <motion.footer 
+      animate={
+        isRecovering 
+          ? { boxShadow: ['inset 0 0 0px rgba(248,113,113,0)', 'inset 0 0 40px rgba(248,113,113,0.35)', 'inset 0 0 0px rgba(248,113,113,0)'] }
+          : { boxShadow: 'inset 0 0 0px rgba(248,113,113,0)' }
+      }
+      transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+      className="h-64 border-t border-outline-variant bg-[#0b0c10] flex flex-col font-mono text-[11px] shrink-0 self-end w-full relative z-40 selection:bg-primary/30 overflow-hidden"
+    >
+      <AnimatePresence>
+        {isRecovering && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 0.1, 0] }}
+            transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+            className="absolute inset-0 bg-[#f87171] pointer-events-none z-20"
+          />
+        )}
+      </AnimatePresence>
       {/* Header */}
       <div className="h-10 border-b border-outline-variant/50 flex flex-col md:flex-row items-start md:items-center justify-between px-4 bg-[#050505] overflow-x-auto scrollbar-hide py-2 md:py-0 min-shrink-0 relative">
+
         <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-primary via-tertiary to-secondary opacity-20" />
         <div className="flex items-center gap-6 uppercase tracking-widest font-bold whitespace-nowrap">
           <div className="flex items-center gap-2 text-on-surface">
@@ -119,17 +214,60 @@ export default function Terminal() {
             <span>APEX_OS TERMINAL</span>
             <span className="text-outline mx-2">|</span>
           </div>
-          
-          <button 
-            onClick={() => setShowConfig(!showConfig)}
-            className={cn(
-              "transition-colors hover:text-white cursor-pointer flex items-center gap-2", 
-              showConfig || visibleStreams.size < Object.keys(STREAM_CONFIG).length ? "text-primary" : "text-on-surface-variant"
+
+          <div className="flex items-center gap-3">
+            {isReplaying || replayIndex < logs.length - 1 ? (
+              <div className="flex items-center gap-2 bg-[#18181b] px-2 py-0.5 rounded border border-outline-variant/30">
+                <button onClick={() => setIsReplaying(!isReplaying)} className="text-primary hover:text-white transition-colors">
+                  {isReplaying ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
+                </button>
+                <input 
+                  type="range" 
+                  min="0" 
+                  max={logs.length - 1} 
+                  value={replayIndex} 
+                  onChange={(e) => {
+                    setReplayIndex(parseInt(e.target.value));
+                    setIsReplaying(false);
+                  }}
+                  className="w-20 h-1 bg-[#3f3f46] rounded appearance-none cursor-pointer" 
+                  style={{ accentColor: 'var(--color-primary)' }}
+                />
+                <select 
+                  value={playbackSpeed} 
+                  onChange={(e) => setPlaybackSpeed(Number(e.target.value))}
+                  className="bg-transparent text-[9px] text-on-surface-variant outline-none ml-1 cursor-pointer"
+                >
+                  <option value={0.5}>0.5x</option>
+                  <option value={1}>1x</option>
+                  <option value={2}>2x</option>
+                  <option value={5}>5x</option>
+                </select>
+              </div>
+            ) : (
+              <button onClick={() => { setReplayIndex(0); setIsReplaying(true); setPlaybackSpeed(2); }} className="transition-colors hover:text-white cursor-pointer flex items-center gap-1 text-on-surface-variant text-[9px] mr-1">
+                <Rewind className="w-3 h-3" /> REPLAY
+              </button>
             )}
-          >
-            <Settings2 className="w-3.5 h-3.5" /> 
-            {visibleStreams.size === Object.keys(STREAM_CONFIG).length ? 'ALL STREAMS VISIBLE' : `${visibleStreams.size}/6 STREAMS VISIBLE`}
-          </button>
+
+            <button 
+              onClick={exportLogs}
+              className="transition-colors hover:text-white cursor-pointer flex items-center gap-1 text-on-surface-variant text-[9px] mr-2"
+            >
+              <Download className="w-3.5 h-3.5" /> EXPORT
+            </button>
+            
+            <button 
+              onClick={() => setShowConfig(!showConfig)}
+              className={cn(
+                "transition-colors hover:text-white cursor-pointer flex items-center gap-2", 
+                showConfig || visibleStreams.size < Object.keys(STREAM_CONFIG).length ? "text-primary" : "text-on-surface-variant"
+              )}
+            >
+              <Settings2 className="w-3.5 h-3.5" /> 
+              {visibleStreams.size === Object.keys(STREAM_CONFIG).length ? 'ALL STREAMS VISIBLE' : `${visibleStreams.size}/6 STREAMS VISIBLE`}
+            </button>
+          </div>
         </div>
         <div className="hidden md:flex flex-col items-end gap-0.5 whitespace-nowrap ml-4">
            <span className="text-[9px] text-outline tracking-widest uppercase">Execution Core v1.0</span>
@@ -144,44 +282,177 @@ export default function Terminal() {
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            className="absolute bottom-12 left-4 z-50 glass-panel border border-outline-variant bg-[#0b0c10]/95 backdrop-blur-xl rounded-lg p-4 w-72 shadow-2xl"
+            className="absolute bottom-12 left-4 z-50 glass-panel border border-outline-variant bg-[#0b0c10]/95 backdrop-blur-xl rounded-lg p-0 w-80 shadow-2xl flex flex-col"
           >
-             <div className="flex justify-between items-center mb-4 pb-3 border-b border-outline-variant/30">
-               <span className="text-[10px] uppercase font-bold text-on-surface tracking-widest">Stream Visibility</span>
-               <button onClick={toggleAll} className="text-[9px] uppercase text-outline hover:text-primary transition-colors">Toggle All</button>
+             <div className="flex justify-between items-center p-3 pb-0">
+               <div className="flex gap-4">
+                 <button 
+                   onClick={() => setFilterTab('STREAMS')}
+                   className={cn("text-[10px] uppercase font-bold tracking-widest pb-2 border-b-2 transition-colors", filterTab === 'STREAMS' ? "text-on-surface border-primary" : "text-outline border-transparent hover:text-on-surface-variant")}
+                 >
+                   Streams
+                 </button>
+                 <button 
+                   onClick={() => setFilterTab('AGENTS')}
+                   className={cn("text-[10px] uppercase font-bold tracking-widest pb-2 border-b-2 transition-colors", filterTab === 'AGENTS' ? "text-on-surface border-primary" : "text-outline border-transparent hover:text-on-surface-variant")}
+                 >
+                   Agents
+                 </button>
+                 <button 
+                   onClick={() => setFilterTab('SEVERITY')}
+                   className={cn("text-[10px] uppercase font-bold tracking-widest pb-2 border-b-2 transition-colors", filterTab === 'SEVERITY' ? "text-on-surface border-primary" : "text-outline border-transparent hover:text-on-surface-variant")}
+                 >
+                   Severity
+                 </button>
+               </div>
              </div>
-             <div className="flex flex-col gap-2">
-               {Object.entries(STREAM_CONFIG).map(([key, config]) => {
-                 const isVisible = visibleStreams.has(key as StreamType);
-                 return (
-                   <button 
-                     key={key}
-                     onClick={() => toggleStream(key as StreamType)}
-                     className={cn(
-                       "flex items-center justify-between p-2 rounded text-[10px] uppercase font-bold tracking-wider transition-colors border",
-                       isVisible ? "bg-white/5 text-on-surface border-white/10" : "bg-transparent text-outline hover:bg-white/5 border-transparent hover:border-white/10"
-                     )}
-                   >
-                     <span className={cn("flex items-center gap-2", isVisible ? config.color : "")}>
-                       {isVisible ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-                       {config.label}
-                     </span>
-                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: isVisible ? config.colorHex : 'transparent' }} />
-                   </button>
-                 );
-               })}
+             
+             <div className="p-3">
+               <div className="flex justify-between items-center mb-3">
+                 <span className="text-[9px] uppercase font-medium text-outline tracking-wider">
+                   {filterTab === 'STREAMS' ? 'Filter by Stream' : filterTab === 'AGENTS' ? 'Filter specific agents' : 'Filter by log level'}
+                 </span>
+                 <button onClick={toggleAll} className="text-[9px] uppercase text-outline hover:text-primary transition-colors">Toggle All</button>
+               </div>
+               
+               <div className="flex flex-col gap-2 max-h-48 overflow-y-auto scrollbar-thin scrollbar-thumb-outline-variant scrollbar-track-transparent">
+                 {filterTab === 'STREAMS' && Object.entries(STREAM_CONFIG).map(([key, config]) => {
+                   const isVisible = visibleStreams.has(key as StreamType);
+                   return (
+                     <button 
+                       key={key}
+                       onClick={() => toggleStream(key as StreamType)}
+                       className={cn(
+                         "flex items-center justify-between p-2 rounded text-[10px] uppercase font-bold tracking-wider transition-colors border",
+                         isVisible ? "bg-white/5 text-on-surface border-white/10" : "bg-transparent text-outline hover:bg-white/5 border-transparent hover:border-white/10"
+                       )}
+                     >
+                       <span className={cn("flex items-center gap-2", isVisible ? config.color : "")}>
+                         {isVisible ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                         {config.label}
+                       </span>
+                       <div className="w-2 h-2 rounded-full" style={{ backgroundColor: isVisible ? config.colorHex : 'transparent' }} />
+                     </button>
+                   );
+                 })}
+                 
+                 {filterTab === 'AGENTS' && availableAgents.map(agent => {
+                   const isVisible = visibleAgents.has(agent);
+                   return (
+                     <button 
+                       key={agent}
+                       onClick={() => toggleAgent(agent)}
+                       className={cn(
+                         "flex items-center justify-between p-2 rounded text-[10px] uppercase font-bold tracking-wider transition-colors border",
+                         isVisible ? "bg-white/5 text-on-surface border-white/10" : "bg-transparent text-outline hover:bg-white/5 border-transparent hover:border-white/10"
+                       )}
+                     >
+                       <span className={cn("flex items-center gap-2 text-[#4F46E5]")}>
+                         {isVisible ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                         {agent}
+                       </span>
+                       <div className="w-2 h-2 rounded-full" style={{ backgroundColor: isVisible ? '#4F46E5' : 'transparent' }} />
+                     </button>
+                   );
+                 })}
+                 
+                 {filterTab === 'SEVERITY' && [
+                   { id: 'info', label: 'INFO', color: 'text-[#d4d4d8]', bg: '#d4d4d8' },
+                   { id: 'success', label: 'SUCCESS', color: 'text-[#34d399]', bg: '#34d399' },
+                   { id: 'warn', label: 'WARNING', color: 'text-[#fde047]', bg: '#fde047' },
+                   { id: 'error', label: 'ERROR', color: 'text-[#f87171]', bg: '#f87171' },
+                 ].map(sev => {
+                   const isVisible = visibleSeverities.has(sev.id);
+                   return (
+                     <button 
+                       key={sev.id}
+                       onClick={() => toggleSeverity(sev.id)}
+                       className={cn(
+                         "flex items-center justify-between p-2 rounded text-[10px] uppercase font-bold tracking-wider transition-colors border",
+                         isVisible ? "bg-white/5 text-on-surface border-white/10" : "bg-transparent text-outline hover:bg-white/5 border-transparent hover:border-white/10"
+                       )}
+                     >
+                       <span className={cn("flex items-center gap-2", isVisible ? sev.color : "")}>
+                         {isVisible ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                         {sev.label}
+                       </span>
+                       <div className="w-2 h-2 rounded-full" style={{ backgroundColor: isVisible ? sev.bg : 'transparent' }} />
+                     </button>
+                   );
+                 })}
+               </div>
              </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Log Content */}
-      <div 
-        ref={scrollRef}
-        className="flex-1 p-4 overflow-y-auto space-y-1.5 text-[#a1a1aa] scrollbar-thin scrollbar-thumb-outline-variant scrollbar-track-transparent pb-8"
-      >
-        <AnimatePresence initial={false}>
-          {filteredLogs.map((log) => (
+      <div className="flex flex-1 overflow-hidden relative">
+        <AnimatePresence>
+          {hasPipelineError && (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 10 }}
+              className="absolute top-4 right-8 z-30 glass-panel border bg-[#0b0c10]/95 backdrop-blur-xl rounded-lg p-4 shadow-2xl w-64 max-w-full"
+              style={{ borderColor: isRecovering ? '#eab308' : '#10b981' }}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <Activity className={cn("w-4 h-4", isRecovering ? "text-[#eab308] animate-pulse" : "text-[#10b981]")} />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-on-surface">System Health</span>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-[10px]">
+                  <span className="text-outline">Engine Status</span>
+                  <span className={cn("font-bold uppercase", isRecovering ? "text-[#f87171] animate-pulse" : "text-[#10b981]")}>
+                    {isRecovering ? 'CRITICAL' : 'STABLE'}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-[10px]">
+                  <span className="text-outline">Active Agents</span>
+                  <span className="font-bold text-on-surface">
+                    {isRecovering ? 'ORION FALLBACK' : 'PRIMARY CLUSTER'}
+                  </span>
+                </div>
+                {isRecovering && (
+                  <div className="mt-3 pt-3 border-t border-outline-variant text-[9px] uppercase tracking-wider text-[#eab308] flex items-center justify-center gap-2">
+                    <CircleDot className="w-3 h-3 animate-spin" />
+                    Agent Recovery in progress...
+                  </div>
+                )}
+                {hasRecovered && (
+                  <div className="mt-3 pt-3 border-t border-outline-variant text-[9px] uppercase tracking-wider text-[#10b981] flex items-center justify-center gap-2">
+                    <Settings2 className="w-3 h-3" />
+                    Pipeline Restored
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Heatmap Bar */}
+        <div className="w-1.5 absolute right-0.5 top-2 bottom-2 flex flex-col gap-[1px] z-10 pointer-events-none opacity-60">
+          {logs.map((log, i) => (
+             <div 
+               key={'heatmap-'+log.id} 
+               className={cn(
+                 "flex-1 rounded-full min-h-[1px]",
+                 log.status === 'error' ? 'bg-[#f87171]' :
+                 log.status === 'warn' ? 'bg-[#fde047]' : 
+                 log.status === 'success' ? 'bg-[#34d399]' : 'bg-[#52525b]',
+                 i > replayIndex && 'opacity-20'
+               )}
+             />
+          ))}
+        </div>
+
+        {/* Log Content */}
+        <div 
+          ref={scrollRef}
+          className="flex-1 p-4 overflow-y-auto space-y-1.5 text-[#a1a1aa] scrollbar-thin scrollbar-thumb-outline-variant scrollbar-track-transparent pb-8 pr-4"
+        >
+          <AnimatePresence initial={false}>
+            {filteredLogs.map((log) => (
             <motion.div 
               key={log.id} 
               initial={{ opacity: 0, x: -5 }}
@@ -217,12 +488,15 @@ export default function Terminal() {
             </motion.div>
           ))}
         </AnimatePresence>
-        <div className="flex gap-4 px-2 py-1 items-center animate-pulse mt-2">
-          <span className="text-primary opacity-50 shrink-0 w-20">WAITING</span>
-          <span className="text-outline shrink-0 w-32 font-bold">[SYSTEM]</span>
-          <span className="bg-[#52525b] w-2 h-3 border-b-2 border-primary" />
-        </div>
+        {replayIndex === logs.length - 1 && (
+          <div className="flex gap-4 px-2 py-1 items-center animate-pulse mt-2">
+            <span className="text-primary opacity-50 shrink-0 w-20">WAITING</span>
+            <span className="text-outline shrink-0 w-32 font-bold">[SYSTEM]</span>
+            <span className="bg-[#52525b] w-2 h-3 border-b-2 border-primary" />
+          </div>
+        )}
       </div>
-    </footer>
+      </div>
+    </motion.footer>
   );
 }

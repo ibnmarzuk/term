@@ -1,107 +1,158 @@
-import { Bot, Search, Brain, Code, Palette, Settings, Database, Activity } from 'lucide-react';
 import { motion } from 'motion/react';
+import { Network, LayoutTemplate, PenTool, Code, FileText, Type, BarChart, TrendingUp, Users, Plus } from 'lucide-react';
 
 export default function AgentDirectory() {
   const agents = [
-    { name: "Research Agent", role: "Data Mining", confidence: 98, status: "RUNNING", icon: Search, color: "primary", description: "Advanced pattern recognition and data synthesis specialist." },
-    { name: "Software Engineer", role: "Fullstack", confidence: 96, status: "WAITING", icon: Code, color: "tertiary", description: "Full-stack autonomous developer specializing in modern TS frameworks." },
-    { name: "Product Designer", role: "UI/UX", confidence: 94, status: "COMPLETED", icon: Palette, color: "secondary", description: "Systematic UI/UX architect with a focus on accessibility and motion." },
-    { name: "AI Engineer", role: "LLMs", confidence: 99, status: "RUNNING", icon: Brain, color: "error", description: "Large Language Model fine-tuning and retrieval optimization expert." },
+    {
+      name: "Research Analyst",
+      role: "Market & landscape intelligence",
+      icon: Network,
+      expertise: ["Competitive analysis", "Market sizing", "Trend mapping"],
+      deliverables: ["Research brief", "Competitor matrix", "Opportunity map"],
+      sample: `"Researched 12 voting dApps, identified 3 unmet UX patterns, sized the Solana DAO market at 4.2k active treasuries."`
+    },
+    {
+      name: "Product Designer",
+      role: "UX flows and interaction design",
+      icon: LayoutTemplate,
+      expertise: ["User flows", "IA", "Interaction patterns"],
+      deliverables: ["Flow diagrams", "Wireframes", "Component specs"],
+      sample: `"Mapped a 3-step proposal flow with a single-screen voting modal."`
+    },
+    {
+      name: "Graphic Designer",
+      role: "Visual identity and brand assets",
+      icon: PenTool,
+      expertise: ["Logo systems", "Color & type", "Marketing visuals"],
+      deliverables: ["Logo lockups", "Color tokens", "Social cards"],
+      sample: `"Built a 5-color minimal palette with a wordmark and 3 social templates."`
+    },
+    {
+      name: "Software Engineer",
+      role: "Code generation & architecture",
+      icon: Code,
+      expertise: ["Full-stack TS", "Smart contracts", "DevOps"],
+      deliverables: ["File tree", "Source files", "Deployment notes"],
+      sample: `"Shipped a Next.js + Anchor scaffold with 27 files and a one-click Vercel config."`
+    },
+    {
+      name: "Technical Writer",
+      role: "READMEs, API docs, developer onboarding",
+      icon: FileText,
+      expertise: ["Dev docs", "Tutorials", "Reference"],
+      deliverables: ["README", "Setup guide", "API reference"],
+      sample: `"Drafted a 5-minute quickstart with copy-paste env setup."`
+    },
+    {
+      name: "Content Writer",
+      role: "Long-form & narrative content",
+      icon: Type,
+      expertise: ["Articles", "Launch threads", "Pitch copy"],
+      deliverables: ["Launch thread", "Article", "Submission pitch"],
+      sample: `"Wrote an 8-tweet launch thread and a 300-word feature article."`
+    },
+    {
+      name: "Business Developer",
+      role: "Partnerships & revenue surfaces",
+      icon: BarChart,
+      expertise: ["Partnership mapping", "Outreach"],
+      deliverables: ["Partner list", "Outreach drafts"],
+      sample: `"Identified 5 potential integration partners in the DeFi space."`
+    },
+    {
+      name: "Growth Strategist",
+      role: "Positioning & GTM",
+      icon: TrendingUp,
+      expertise: ["Positioning", "Acquisition loops", "Metrics"],
+      deliverables: ["Positioning brief", "GTM plan", "Metrics"],
+      sample: `"Designed a referral loop projecting a 15% WoW growth rate."`
+    },
+    {
+      name: "Community Manager",
+      role: "Community ops & engagement",
+      icon: Users,
+      expertise: ["Discord/X strategy", "Programs"],
+      deliverables: ["Comms calendar", "Engagement playbook"],
+      sample: `"Drafted a 4-week engagement plan for managing beta tester feedback."`
+    }
   ];
 
   return (
-    <div className="flex flex-col gap-xl">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-md mb-md">
+    <div className="flex flex-col h-full overflow-y-auto p-8 scrollbar-hide pb-20">
+      
+      <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
         <div>
-          <div className="code-md label-caps text-primary mb-xs">NEURAL_NET_MAINFRAME</div>
-          <h2 className="headline-lg text-on-surface tracking-tight">Agent Directory</h2>
-          <p className="text-on-surface-variant body-sm max-w-lg mt-sm">Orchestrate your autonomous workflow with specialized AI entities. Monitor performance, confidence scores, and current execution states.</p>
+           <div className="flex items-center gap-2 mb-4">
+             <span className="text-[#00e59b] text-[10px] uppercase font-bold tracking-widest">// WORKFORCE</span>
+           </div>
+           <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-2">ACTIVE AGENTS (9)</h1>
+           <p className="text-[#a1a1aa] text-[13px]">Configure, monitor, and deploy your specialized workforce.</p>
         </div>
-        <div className="flex gap-md">
-          <button className="bg-surface-container hover:bg-surface-container-high text-on-surface border border-outline-variant/20 px-lg py-sm rounded-lg flex items-center gap-sm transition-all body-sm">
-            <Settings className="w-4 h-4" /> Filter
-          </button>
-          <button className="bg-primary-container text-white px-lg py-sm rounded-lg flex items-center gap-sm transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:scale-105 active:scale-95 body-sm font-semibold">
-            Deploy Agent
-          </button>
-        </div>
+        <button className="flex items-center gap-2 px-4 py-2 bg-[#27272a] hover:bg-[#3f3f46] text-white transition-colors rounded-md text-[13px] font-medium w-fit border border-[#3f3f46]">
+          <Plus className="w-4 h-4" /> Deploy New Agent
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-gutter">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-8">
         {agents.map((agent, i) => (
-          <motion.div 
+          <div 
             key={agent.name}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="glass-card rounded-xl p-lg flex flex-col group cursor-pointer"
+            className="bg-[#0b0c10] border border-[#27272a] rounded-xl p-5 flex flex-col group hover:border-[#3f3f46] transition-colors"
           >
-            <div className="flex justify-between items-start mb-lg">
-              <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-${agent.color} bg-${agent.color}/10 border border-${agent.color}/20`}>
-                <agent.icon className="w-6 h-6" />
+            {/* Header Content */}
+            <div className="flex items-start gap-4 mb-6">
+              <div className="w-10 h-10 rounded-md bg-[#050505] border border-[#27272a] flex items-center justify-center shrink-0">
+                <agent.icon className="w-5 h-5 text-[#00e59b]" />
               </div>
-              <div className="flex items-center gap-sm">
-                <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider ${
-                  agent.status === 'RUNNING' ? 'bg-secondary/10 text-secondary border border-secondary/20' :
-                  agent.status === 'WAITING' ? 'bg-tertiary/10 text-tertiary border border-tertiary/20' :
-                  agent.status === 'COMPLETED' ? 'bg-primary/10 text-primary border border-primary/20' :
-                  agent.status === 'ERROR' ? 'bg-error/10 text-error border border-error/20' :
-                  'bg-surface-container-high text-on-surface-variant border border-outline-variant'
-                }`}>
-                  {agent.status}
-                </span>
-                {agent.status === 'RUNNING' ? (
-                  <div className={`w-2 h-2 rounded-full bg-secondary animate-pulse`} />
-                ) : agent.status === 'ERROR' ? (
-                  <div className={`w-2 h-2 rounded-full bg-error animate-pulse`} />
-                ) : (
-                  <div className={`w-2 h-2 rounded-full bg-outline-variant`} />
-                )}
+              <div className="flex flex-col pt-1">
+                <h3 className="text-white font-semibold text-[15px] leading-tight">
+                  {agent.name}
+                </h3>
+                <p className="text-[#a1a1aa] text-[13px] mt-1">
+                  {agent.role}
+                </p>
               </div>
             </div>
             
-            <h3 className="title-md text-on-surface mb-xs group-hover:text-primary transition-colors flex items-center gap-2">
-              {agent.name}
-            </h3>
-            <p className="text-on-surface-variant body-sm mb-lg">{agent.description}</p>
-            
-            <div className="space-y-md mt-auto">
-              <div className="flex justify-between items-center">
-                <span className="label-caps text-outline">CONFIDENCE</span>
-                <span className={`title-md font-bold text-${agent.color}`}>{agent.confidence}%</span>
+            {/* Expertise */}
+            <div className="mb-6">
+              <div className="text-[10px] uppercase font-bold tracking-widest text-[#71717a] mb-3">
+                EXPERTISE
               </div>
-              <div className="w-full bg-surface-container-highest rounded-full h-1 overflow-hidden">
-                <div className={`bg-${agent.color} h-full rounded-full`} style={{ width: `${agent.confidence}%` }}></div>
-              </div>
-              
-              <div className="pt-md border-t border-outline-variant/10 flex justify-between items-center">
-                <div className="flex flex-col">
-                  <span className="text-[10px] text-outline uppercase code-md">Specialization</span>
-                  <span className="body-sm font-medium">{agent.role}</span>
-                </div>
-                <div className="text-primary opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0">
-                  →
-                </div>
+              <div className="flex flex-wrap gap-2">
+                {agent.expertise.map((exp, j) => (
+                  <span key={j} className="px-2 py-1.5 rounded text-[11px] font-medium bg-[#18181b] border border-[#27272a] text-[#a1a1aa]">
+                    {exp}
+                  </span>
+                ))}
               </div>
             </div>
-          </motion.div>
-        ))}
-      </div>
 
-      <div className="mt-xl glass-panel rounded-xl overflow-hidden">
-        <div className="bg-surface-container-highest px-lg py-sm flex items-center justify-between border-b border-outline-variant/10">
-          <div className="flex gap-sm items-center">
-            <Activity className="w-4 h-4 text-outline" />
-            <span className="code-md text-[10px] text-outline">EXECUTION_LOG.SH</span>
+            {/* Deliverables */}
+            <div className="mb-6">
+              <div className="text-[10px] uppercase font-bold tracking-widest text-[#71717a] mb-3">
+                DELIVERABLES
+              </div>
+              <ul className="text-[13px] text-[#e4e4e7] space-y-2">
+                {agent.deliverables.map((item, j) => (
+                  <li key={j} className="flex items-center gap-2 before:content-['•'] before:text-[#52525b]">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Sample */}
+            <div className="mt-auto pt-4 border-t border-[#27272a]">
+              <div className="text-[10px] uppercase font-bold tracking-widest text-[#71717a] mb-3">
+                SAMPLE
+              </div>
+              <p className="text-[13px] text-[#a1a1aa] italic leading-relaxed">
+                {agent.sample}
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="p-lg bg-surface-container-lowest code-md text-on-surface-variant space-y-xs opacity-80 h-48 overflow-y-auto">
-          <p><span className="text-primary">root@apex_os:~$</span> initializing_neural_bridge...</p>
-          <p><span className="text-secondary">[OK]</span> Research Agent connected via DataStream-V4</p>
-          <p><span className="text-secondary">[OK]</span> AI Engineer processing fine-tuning request (Shard 242)</p>
-          <p><span className="text-tertiary opacity-80">[WARN]</span> Latency spike detected in LLM inference gateway</p>
-          <p><span className="text-primary">root@apex_os:~$</span> monitoring active agents... <span className="animate-pulse">_</span></p>
-        </div>
+        ))}
       </div>
     </div>
   );

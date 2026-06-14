@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-surface: #0a0a0b;
+  --color-surface-dim: #0a0a0b;
+  --color-surface-bright: #141415;
+  --color-surface-container-lowest: #0a0a0b;
+  --color-surface-container-low: #0a0a0b;
+  --color-surface-container: #141415;
+  --color-surface-container-high: #1a1a1b;
+  --color-surface-container-highest: #27272a;
+  
+  --color-on-surface: #ededed;
+  --color-on-surface-variant: #a1a1aa;
+  --color-inverse-surface: #ededed;
+  --color-inverse-on-surface: #0a0a0b;
+  
+  --color-outline: #71717a;
+  --color-outline-variant: #27272a;
+  
+  --color-primary: #3b82f6;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #3b82f6;
+  --color-on-primary-container: #ffffff;
+  --color-inverse-primary: #93c5fd;
+  
+  --color-secondary: #34d399;
+  --color-on-secondary: #000000;
+  --color-secondary-container: #059669;
+  --color-on-secondary-container: #ffffff;
+  
+  --color-tertiary: #f59e0b;
+  --color-on-tertiary: #000000;
+  --color-tertiary-container: #d97706;
+  --color-on-tertiary-container: #ffffff;
+  
+  --color-error: #ef4444;
+  --color-on-error: #ffffff;
+  --color-error-container: #dc2626;
+  --color-on-error-container: #ffffff;
+  
+  --color-background: #0a0a0b;
+  --color-on-background: #ededed;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 40px;
+  --spacing-xxl: 64px;
+}
+
+@utility display-lg {
+  font-size: 48px;
+  line-height: 56px;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+@utility headline-lg {
+  font-size: 32px;
+  line-height: 40px;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+@utility title-md {
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 500;
+}
+@utility body-md {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+}
+@utility body-sm {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+}
+@utility code-md {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 500;
+}
+@utility label-caps {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  line-height: 14px;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+@utility glass-panel {
+  background-color: var(--color-surface-container);
+  border: 1px solid var(--color-outline-variant);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+@utility glass-card {
+  background-color: var(--color-surface-container-high);
+  border: 1px solid var(--color-outline-variant);
+  transition: all 0.2s ease;
+}
+.glass-card:hover {
+  border-color: var(--color-primary);
+  background-color: var(--color-surface-container-highest);
+}
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+

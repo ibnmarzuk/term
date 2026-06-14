@@ -1,0 +1,6 @@
+{
+  "name": "APEX OS",
+  "description": "An AI Native Execution Operating System with intelligent agent routing, project workspace, and deployment orchestration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

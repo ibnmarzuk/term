@@ -26,7 +26,7 @@ export default function Sidebar() {
           "flex items-center gap-3 px-3 py-2 rounded-md text-[13px] transition-colors w-full text-left",
           isActive ? "bg-[#27272a]/50 text-white" : "text-[#a1a1aa] hover:bg-[#27272a]/30 hover:text-white"
         )}>
-          <Activity className="w-4 h-4 shrink-0" /> Dashboard
+          <Terminal className="w-4 h-4 shrink-0 text-[#00e59b]" /> APEX Terminal
         </NavLink>
         <NavLink to="/workspace" className={({ isActive }) => cn(
           "flex items-center gap-3 px-3 py-2 rounded-md text-[13px] transition-colors w-full text-left",
@@ -39,6 +39,18 @@ export default function Sidebar() {
           isActive ? "bg-[#27272a]/50 text-white" : "text-[#a1a1aa] hover:bg-[#27272a]/30 hover:text-white"
         )}>
           <Bot className="w-4 h-4 shrink-0" /> Agents
+        </NavLink>
+        <NavLink to="/mission-engine" className={({ isActive }) => cn(
+          "flex items-center gap-3 px-3 py-2 rounded-md text-[13px] transition-colors w-full text-left",
+          isActive ? "bg-[#27272a]/50 text-white" : "text-[#a1a1aa] hover:bg-[#27272a]/30 hover:text-white"
+        )}>
+          <Workflow className="w-4 h-4 shrink-0" /> Mission Engine
+        </NavLink>
+        <NavLink to="/workflow-studio" className={({ isActive }) => cn(
+          "flex items-center gap-3 px-3 py-2 rounded-md text-[13px] transition-colors w-full text-left",
+          isActive ? "bg-[#27272a]/50 text-white" : "text-[#a1a1aa] hover:bg-[#27272a]/30 hover:text-white"
+        )}>
+          <Cpu className="w-4 h-4 shrink-0" /> Workflow Studio
         </NavLink>
         <NavLink to="/tracking-board" className={({ isActive }) => cn(
           "flex items-center gap-3 px-3 py-2 rounded-md text-[13px] transition-colors w-full text-left",

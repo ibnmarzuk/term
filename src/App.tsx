@@ -14,6 +14,8 @@ import OpportunityRadar from './pages/OpportunityRadar';
 import IntelligenceBrain from './pages/IntelligenceBrain';
 import ArtifactStudio from './pages/ArtifactStudio';
 import TrackingBoard from './pages/TrackingBoard';
+import MissionEngine from './pages/MissionEngine';
+import WorkflowStudio from './pages/WorkflowStudio';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Landing from './pages/Landing';
@@ -63,6 +65,8 @@ function AnimatedRoutes() {
         <Route path="/command-center" element={<RequireAuth><Layout><CommandCenter /></Layout></RequireAuth>} />
         <Route path="/agents" element={<RequireAuth><Layout><AgentDirectory /></Layout></RequireAuth>} />
         <Route path="/workspace" element={<RequireAuth><Layout><ProjectWorkspace /></Layout></RequireAuth>} />
+        <Route path="/mission-engine" element={<RequireAuth><Layout><MissionEngine /></Layout></RequireAuth>} />
+        <Route path="/workflow-studio" element={<RequireAuth><Layout><WorkflowStudio /></Layout></RequireAuth>} />
         <Route path="/radar" element={<RequireAuth><Layout><OpportunityRadar /></Layout></RequireAuth>} />
         <Route path="/brain" element={<RequireAuth><Layout><IntelligenceBrain /></Layout></RequireAuth>} />
         <Route path="/artifacts" element={<RequireAuth><Layout><ArtifactStudio /></Layout></RequireAuth>} />

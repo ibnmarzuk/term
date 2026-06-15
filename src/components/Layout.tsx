@@ -1,8 +1,12 @@
 import { ReactNode } from 'react';
 import Sidebar from './Sidebar';
 import Terminal from './Terminal';
+import { useLocation } from 'react-router-dom';
 
 export default function Layout({ children }: { children: ReactNode }) {
+  const location = useLocation();
+  const isCommandCenter = location.pathname === '/command-center';
+
   return (
     <div className="flex h-screen overflow-hidden bg-[#000000] text-on-background font-sans select-none">
       <Sidebar />
@@ -10,7 +14,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         <main className="flex-1 overflow-y-auto w-full relative">
           {children}
         </main>
-        <Terminal />
+        {!isCommandCenter && <Terminal />}
       </div>
     </div>
   );

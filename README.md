@@ -1,4 +1,4 @@
-# 🌌 APEX OS (v1.5 Enterprise Specification)
+# 🌌APEX OS 
 
 APEX OS is a multi-agent AI Operating System that transforms complex human intentions into executable, production-ready digital missions. Unlike traditional conversational chatbots, APEX is a zero-latency **execution environment** designed for modular orchestration, persistent workflows, robust automation, and enterprise-grade observability.
 
@@ -132,23 +132,3 @@ This section outlines the feature status of the APEX OS platform against PRD v1.
 
 ---
 
-## 💻 7. Local Sandbox Setup
-
-To run APEX OS in your isolated diagnostic environment:
-
-1.  **Install Dependencies**:
-    ```bash
-    npm install
-    ```
-2.  **Start Dev Server**:
-    ```bash
-    npm run dev
-    ```
-3.  **Compile & Compile Production Bundle**:
-    ```bash
-    npm run build
-    ```
-4.  **Run System Linter & Typechecks**:
-    ```bash
-    npm run lint
-    ```

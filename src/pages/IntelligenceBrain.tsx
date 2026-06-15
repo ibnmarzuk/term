@@ -1,7 +1,10 @@
 import { BrainCircuit } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useTerminal } from '../lib/TerminalContext';
+import { cn } from '../lib/utils';
 
 export default function IntelligenceBrain() {
+  const { collapsed } = useTerminal();
   const nodes = [
     { id: 1, name: "Strategic Council", x: 50, y: 30, color: "primary" },
     { id: 2, name: "Contrarian", x: 20, y: 20, color: "tertiary" },
@@ -16,7 +19,7 @@ export default function IntelligenceBrain() {
   ];
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className={cn("w-full h-full flex flex-col transition-all duration-300", collapsed ? "pb-8" : "pb-64")}>
       <div className="text-center max-w-3xl mx-auto mb-16 px-4">
         <span className="text-[#00E5C3] text-[10px] sm:text-xs font-mono uppercase tracking-[0.2em] block mb-4">// BRAIN CORE</span>
         <h1 className="text-3xl sm:text-5xl font-mono uppercase tracking-tight text-[#F2F5F4] font-bold mb-6 flex items-center justify-center gap-3">
@@ -27,7 +30,7 @@ export default function IntelligenceBrain() {
         </p>
       </div>
 
-      <div className="flex-1 glass-panel rounded-2xl border-primary/10 relative overflow-hidden flex items-center justify-center min-h-[500px]">
+      <div className="flex-1 glass-panel rounded-2xl border-primary/10 relative overflow-hidden flex items-center justify-center min-h-[500px]" style={{ minHeight: '500px' }}>
         
         {/* Canvas background grid */}
         <div className="absolute inset-0 z-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} />

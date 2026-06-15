@@ -65,9 +65,15 @@ export default function Sidebar() {
         )}>
            <Database className="w-4 h-4 shrink-0" /> Memory
         </NavLink>
+        <NavLink to="/artifacts" className={({ isActive }) => cn(
+          "flex items-center gap-3 px-3 py-2 rounded-md text-[13px] transition-colors w-full text-left",
+          isActive ? "bg-[#27272a]/50 text-white" : "text-[#a1a1aa] hover:bg-[#27272a]/30 hover:text-white"
+        )}>
+           <Box className="w-4 h-4 shrink-0" /> Artifacts
+        </NavLink>
         
         <div className="pt-4">
-          <NavLink to="/artifacts" className={({ isActive }) => cn(
+          <NavLink to="/settings" className={({ isActive }) => cn(
             "flex items-center gap-3 px-3 py-2 rounded-md text-[13px] transition-colors w-full text-left",
             isActive ? "bg-[#27272a]/50 text-white" : "text-[#a1a1aa] hover:bg-[#27272a]/30 hover:text-white"
           )}>

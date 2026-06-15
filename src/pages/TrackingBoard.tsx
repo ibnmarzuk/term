@@ -8,6 +8,7 @@ import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, useDroppable } f
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useLivePreview } from '../lib/LivePreviewContext';
+import { useTerminal } from '../lib/TerminalContext';
 
 interface TaskNode {
   id: string;
@@ -84,6 +85,7 @@ function KanbanColumn({ id, title, nodes }: { id: string, title: string, nodes: 
 export default function TrackingBoard() {
   const navigate = useNavigate();
   const { simulateTask } = useLivePreview();
+  const { collapsed } = useTerminal();
   const [loading, setLoading] = useState(true);
   const [nodes, setNodes] = useState<TaskNode[]>(INITIAL_NODES);
   const [activeTask, setActiveTask] = useState<TaskNode | null>(null);
@@ -129,7 +131,7 @@ export default function TrackingBoard() {
   };
 
   return (
-    <div className="flex flex-col xl:flex-row gap-8 h-full p-8 overflow-y-auto relative">
+    <div className={cn("flex flex-col xl:flex-row gap-8 h-full p-8 overflow-y-auto relative transition-all duration-300", collapsed ? "pb-8" : "pb-64")}>
       <div className="absolute inset-0 z-0 pointer-events-none opacity-25" style={{ backgroundImage: 'radial-gradient(var(--color-outline-variant) 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
       
       <div className="flex-1 flex flex-col gap-8 z-10 w-full">

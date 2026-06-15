@@ -16,6 +16,7 @@ import ArtifactStudio from './pages/ArtifactStudio';
 import TrackingBoard from './pages/TrackingBoard';
 import MissionEngine from './pages/MissionEngine';
 import WorkflowStudio from './pages/WorkflowStudio';
+import SettingsPage from './pages/Settings';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Landing from './pages/Landing';
@@ -72,6 +73,7 @@ function AnimatedRoutes() {
         <Route path="/brain" element={<RequireAuth><Layout><IntelligenceBrain /></Layout></RequireAuth>} />
         <Route path="/artifacts" element={<RequireAuth><Layout><ArtifactStudio /></Layout></RequireAuth>} />
         <Route path="/tracking-board" element={<RequireAuth><Layout><TrackingBoard /></Layout></RequireAuth>} />
+        <Route path="/settings" element={<RequireAuth><Layout><SettingsPage /></Layout></RequireAuth>} />
       </Routes>
     </AnimatePresence>
   );

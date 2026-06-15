@@ -4,22 +4,25 @@ import Terminal from './Terminal';
 import Header from './Header';
 import ExecutionLivePreview from './ExecutionLivePreview';
 import { useLocation } from 'react-router-dom';
+import { TerminalProvider } from '../lib/TerminalContext';
 
 export default function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
   const isCommandCenter = location.pathname === '/command-center';
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#000000] text-on-background font-sans select-none">
-      <Sidebar />
-      <div className="flex flex-col flex-1 relative overflow-hidden bg-[#050505]">
-        <Header />
-        <main className="flex-1 overflow-y-auto w-full relative">
-          {children}
-        </main>
-        {!isCommandCenter && <Terminal />}
+    <TerminalProvider>
+      <div className="flex h-screen overflow-hidden bg-[#000000] text-on-background font-sans select-none">
+        <Sidebar />
+        <div className="flex flex-col flex-1 relative overflow-hidden bg-[#050505]">
+          <Header />
+          <main className="flex-1 overflow-y-auto w-full relative">
+            {children}
+          </main>
+          {!isCommandCenter && <Terminal />}
+        </div>
+        <ExecutionLivePreview />
       </div>
-      <ExecutionLivePreview />
-    </div>
+    </TerminalProvider>
   );
 }

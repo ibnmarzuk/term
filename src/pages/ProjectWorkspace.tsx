@@ -2,8 +2,11 @@ import { Play, Settings, Search, Palette, Code, CheckCircle, Download, FileJson 
 import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
 import { Skeleton } from '../components/Skeleton';
+import { cn } from '../lib/utils';
+import { useTerminal } from '../lib/TerminalContext';
 
 export default function ProjectWorkspace() {
+  const { collapsed } = useTerminal();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -12,7 +15,7 @@ export default function ProjectWorkspace() {
   }, []);
 
   return (
-    <div className="max-w-[1440px] mx-auto min-h-screen">
+    <div className={cn("max-w-[1440px] mx-auto min-h-screen transition-all duration-300", collapsed ? "pb-8" : "pb-64")}>
       {/* Project Header */}
       <section className="mb-12">
         <div className="text-center max-w-4xl mx-auto mb-12">

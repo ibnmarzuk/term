@@ -8,6 +8,7 @@ import {
 import { cn } from '../lib/utils';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts';
 import { useLivePreview } from '../lib/LivePreviewContext';
+import { useTerminal } from '../lib/TerminalContext';
 
 // MISSION ENGINE Interfaces & Data
 interface MissionTask {
@@ -162,6 +163,7 @@ const INITIAL_AUDITS: AuditLog[] = [
 ];
 
 export default function MissionEngine() {
+  const { collapsed } = useTerminal();
   const [missions, setMissions] = useState<Mission[]>(INITIAL_MISSIONS);
   const [supervisors, setSupervisors] = useState<Supervisor[]>(INITIAL_SUPERVISORS);
   const [activeTab, setActiveTab] = useState<'MISSIONS' | 'AGENTS' | 'MEMORY' | 'GOVERNANCE'>('MISSIONS');
@@ -265,7 +267,7 @@ export default function MissionEngine() {
   );
 
   return (
-    <div className="flex flex-col h-full overflow-y-auto p-4 sm:p-8 scrollbar-hide pb-20 bg-[#020B0A] relative text-[#F2F5F4]">
+    <div className={cn("flex flex-col h-full overflow-y-auto p-4 sm:p-8 scrollbar-hide bg-[#020B0A] relative text-[#F2F5F4] transition-all duration-300", collapsed ? "pb-8" : "pb-64")}>
       {/* Background visual elements */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-20" style={{ backgroundImage: 'radial-gradient(#12302A 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
 

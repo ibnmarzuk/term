@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Skeleton } from '../components/Skeleton';
 import { cn } from '../lib/utils';
+import { toast } from 'sonner';
+import { useTerminal } from '../lib/TerminalContext';
 
 interface Artifact {
   id: string;
@@ -15,26 +17,50 @@ interface Artifact {
   version: string;
 }
 
+const INITIAL_ARTIFACTS: Artifact[] = [
+  { id: '1', name: 'core-router.ts', type: 'TypeScript', status: 'Stable', updatedAt: '2m ago', author: 'Agent ORION', size: '12.4 KB', version: 'v1.4.2' },
+  { id: '2', name: 'auth-middleware.ts', type: 'TypeScript', status: 'Reviewing', updatedAt: '15m ago', author: 'Agent LEO', size: '4.2 KB', version: 'v1.1.0' },
+  { id: '3', name: 'design-tokens.json', type: 'JSON', status: 'Stable', updatedAt: '1h ago', author: 'Agent LYRA', size: '1.8 KB', version: 'v2.0.1' },
+  { id: '4', name: 'api-spec.yaml', type: 'YAML', status: 'Updating', updatedAt: '2h ago', author: 'System', size: '8.1 KB', version: 'v3.1.0' },
+  { id: '5', name: 'database-schema.sql', type: 'SQL', status: 'Stable', updatedAt: '5h ago', author: 'Agent DRACO', size: '24.5 KB', version: 'v1.8.4' },
+  { id: '6', name: 'Button.tsx', type: 'React', status: 'Stable', updatedAt: '1d ago', author: 'Agent LYRA', size: '3.2 KB', version: 'v1.0.5' },
+];
+
 export default function ArtifactStudio() {
+  const { collapsed } = useTerminal();
   const [loading, setLoading] = useState(true);
   const [selectedArtifact, setSelectedArtifact] = useState<Artifact | null>(null);
+  const [artifacts, setArtifacts] = useState<Artifact[]>(INITIAL_ARTIFACTS);
+  const [newModal, setNewModal] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [newType, setNewType] = useState('TypeScript');
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1200);
     return () => clearTimeout(timer);
   }, []);
 
-  const artifacts: Artifact[] = [
-    { id: '1', name: 'core-router.ts', type: 'TypeScript', status: 'Stable', updatedAt: '2m ago', author: 'Agent ORION', size: '12.4 KB', version: 'v1.4.2' },
-    { id: '2', name: 'auth-middleware.ts', type: 'TypeScript', status: 'Reviewing', updatedAt: '15m ago', author: 'Agent LEO', size: '4.2 KB', version: 'v1.1.0' },
-    { id: '3', name: 'design-tokens.json', type: 'JSON', status: 'Stable', updatedAt: '1h ago', author: 'Agent LYRA', size: '1.8 KB', version: 'v2.0.1' },
-    { id: '4', name: 'api-spec.yaml', type: 'YAML', status: 'Updating', updatedAt: '2h ago', author: 'System', size: '8.1 KB', version: 'v3.1.0' },
-    { id: '5', name: 'database-schema.sql', type: 'SQL', status: 'Stable', updatedAt: '5h ago', author: 'Agent DRACO', size: '24.5 KB', version: 'v1.8.4' },
-    { id: '6', name: 'Button.tsx', type: 'React', status: 'Stable', updatedAt: '1d ago', author: 'Agent LYRA', size: '3.2 KB', version: 'v1.0.5' },
-  ];
+  const handleCreate = () => {
+    if (!newName.trim()) return toast.error('Name required');
+    const newArtifact: Artifact = {
+      id: Date.now().toString(),
+      name: newName,
+      type: newType,
+      status: 'Stable',
+      updatedAt: 'Just now',
+      author: 'User',
+      size: '0 KB',
+      version: 'v1.0.0'
+    };
+    setArtifacts(prev => [newArtifact, ...prev]);
+    toast.success('Artifact created');
+    setNewModal(false);
+    setNewName('');
+    setNewType('TypeScript');
+  };
 
   return (
-    <div className="flex flex-col h-full relative">
+    <div className={cn("flex flex-col h-full relative transition-all duration-300", collapsed ? "pb-8" : "pb-64")}>
       <div className="p-8 pb-4">
         
         {/* Artifact Studio Header */}
@@ -51,7 +77,7 @@ export default function ArtifactStudio() {
             <button className="px-5 py-2.5 bg-[#071311] border border-[#12302A] hover:border-[#00CFAE] hover:text-[#00E5C3] transition-colors rounded-sm text-xs font-mono uppercase tracking-wider flex items-center gap-2 cursor-pointer">
               <Download className="w-4 h-4" /> Export All
             </button>
-            <button className="px-5 py-2.5 bg-[#00E5C3] hover:bg-[#00CFAE] text-[#02110E] transition-all rounded-sm text-xs font-mono uppercase tracking-wider flex items-center gap-2 cursor-pointer shadow-[0_0_15px_rgba(0,229,195,0.15)]">
+            <button onClick={() => setNewModal(true)} className="px-5 py-2.5 bg-[#00E5C3] hover:bg-[#00CFAE] text-[#02110E] transition-all rounded-sm text-xs font-mono uppercase tracking-wider flex items-center gap-2 cursor-pointer shadow-[0_0_15px_rgba(0,229,195,0.15)]">
               <Code className="w-4 h-4" /> New Artifact
             </button>
           </div>
@@ -199,6 +225,46 @@ export default function ArtifactStudio() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {newModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#05110F] border border-[#00E5C3]/30 rounded-xl max-w-sm w-full flex flex-col shadow-2xl overflow-hidden">
+            <div className="px-6 py-5 border-b border-[#00E5C3]/10">
+              <h3 className="font-mono text-[#F2F5F4] font-bold text-lg uppercase tracking-wider">New Artifact</h3>
+            </div>
+            <div className="p-6 flex flex-col gap-5">
+              <div>
+                <label className="text-[10px] uppercase font-mono tracking-widest text-[#00E5C3] mb-2 block">Artifact Name</label>
+                <input 
+                  type="text" 
+                  value={newName} 
+                  onChange={e => setNewName(e.target.value)} 
+                  className="w-full bg-[#020B0A] border border-[#12302A] rounded p-2 text-sm text-[#F2F5F4] outline-none"
+                  placeholder="e.g. settings-drawer.tsx"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] uppercase font-mono tracking-widest text-[#00E5C3] mb-2 block">Artifact Type</label>
+                <select 
+                  value={newType} 
+                  onChange={e => setNewType(e.target.value)}
+                  className="w-full bg-[#020B0A] border border-[#12302A] rounded p-2 text-sm text-[#F2F5F4] outline-none"
+                >
+                  <option value="TypeScript">TypeScript</option>
+                  <option value="React">React</option>
+                  <option value="JSON">JSON</option>
+                  <option value="YAML">YAML</option>
+                  <option value="SQL">SQL</option>
+                </select>
+              </div>
+            </div>
+            <div className="px-6 py-4 border-t border-[#00E5C3]/10 bg-[#020B0A] flex justify-end gap-3">
+              <button onClick={() => setNewModal(false)} className="px-4 py-2 border border-[#12302A] hover:bg-[#12302A] rounded font-mono text-xs uppercase tracking-wider text-[#93A8A1] transition-colors cursor-pointer">Cancel</button>
+              <button onClick={handleCreate} className="px-4 py-2 bg-[#00E5C3] hover:bg-[#00CFAE] text-[#02110E] rounded font-mono text-xs font-bold uppercase tracking-wider cursor-pointer">Create</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

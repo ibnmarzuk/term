@@ -10,6 +10,7 @@ import WorkforceView from '../components/WorkforceView';
 import TaskRegistry from '../components/TaskRegistry';
 import MCPConnections from '../components/MCPConnections';
 import { useLivePreview } from '../lib/LivePreviewContext';
+import { useTerminal } from '../lib/TerminalContext';
 
 // Agent Specification Interface
 interface Agent {
@@ -170,6 +171,7 @@ const SUPERVISORS: Supervisor[] = [
 ];
 
 export default function CommandCenter() {
+  const { collapsed } = useTerminal();
   const { startTask, updateProgress, addLog, completeTask } = useLivePreview();
   const [inputText, setInputText] = useState('');
   const [currentMissionStatus, setCurrentMissionStatus] = useState<'DRAFT' | 'PLANNED' | 'APPROVED' | 'RUNNING' | 'COMPLETED'>('DRAFT');
@@ -189,7 +191,24 @@ export default function CommandCenter() {
   // Selection
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [viewMode, setViewMode] = useState<'MISSION' | 'WORKFORCE' | 'REGISTRY' | 'CONNECTIONS'>('MISSION');
-  const [completedTasks, setCompletedTasks] = useState<{id: string; name: string; status: 'Completed' | 'Failed'; timestamp: string}[]>([]);
+  
+  const [completedTasks, setCompletedTasks] = useState<{id: string; name: string; status: 'Completed' | 'Failed'; timestamp: string; logs?: ExecutionEvent[]; cost?: any}[]>(() => {
+    try {
+      const saved = localStorage.getItem('apex_completed_tasks');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('apex_completed_tasks', JSON.stringify(completedTasks));
+    } catch (e) {
+      console.error("Failed to persist tasks", e);
+    }
+  }, [completedTasks]);
+
   const [connections, setConnections] = useState<Record<string, {name: string, status: 'READY' | 'DORMANT' | 'ERROR', lastChecked: string}>>({
     'GitHub': { name: 'GitHub', status: 'READY', lastChecked: 'Just now' },
     'Vercel': { name: 'Vercel', status: 'READY', lastChecked: 'Just now' },
@@ -754,7 +773,9 @@ export default function CommandCenter() {
                 id: `T-${Date.now()}`,
                 name: inputText,
                 status: 'Completed',
-                timestamp: getFormattedTime()
+                timestamp: getFormattedTime(),
+                logs: timelineLogs,
+                cost: getDynamicCost()
               }]);
             } else if (nextStep.stepIndex >= 4) {
               setCurrentMissionStatus('RUNNING');
@@ -826,7 +847,7 @@ export default function CommandCenter() {
   const isVercelActive = isExecuting && timelineLogs[activeStepIndex]?.message.includes('Vercel MCP');
 
   return (
-    <div className="flex flex-col h-screen bg-[#020706] text-[#EBEFE2] overflow-hidden select-none font-mono relative">
+    <div className={cn("flex flex-col h-screen bg-[#020706] text-[#EBEFE2] overflow-hidden select-none font-mono relative transition-all duration-300", collapsed ? "pb-8" : "pb-64")}>
       {/* Visual Ambient grid */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.02] bg-[linear-gradient(to_right,#00E5C3_1px,transparent_1px),linear-gradient(to_bottom,#00E5C3_1px,transparent_1px)] bg-[size:32px_32px]" />
       <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.08] bg-[radial-gradient(circle_at_top,rgba(0,229,195,0.1),transparent_75%)]" />
@@ -934,7 +955,21 @@ export default function CommandCenter() {
 
         {viewMode === 'REGISTRY' && (
            <div className="flex-1 p-6">
-             <TaskRegistry tasks={completedTasks} />
+             <TaskRegistry 
+               tasks={completedTasks} 
+               onSelectTask={(taskId) => {
+                 const task = completedTasks.find(t => t.id === taskId);
+                 if (task && task.logs) {
+                   setTimelineLogs(task.logs);
+                   setActiveStepIndex(task.logs.length - 1);
+                   setIsExecuting(true);
+                   setIsPlaying(false);
+                   setInputText(task.name);
+                   setCurrentMissionStatus(task.status === 'Completed' ? 'COMPLETED' : 'FAILED');
+                   setViewMode('MISSION');
+                 }
+               }} 
+             />
            </div>
         )}
 

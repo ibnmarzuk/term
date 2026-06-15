@@ -1,8 +1,9 @@
-import { Activity, Terminal as TerminalIcon, CircleDot, Cpu, Settings2, Eye, EyeOff, Download, Play, Pause, Rewind } from 'lucide-react';
+import { Activity, Terminal as TerminalIcon, CircleDot, Cpu, Settings2, Eye, EyeOff, Download, Play, Pause, Rewind, ArrowUpDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useState, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import { cn } from '../lib/utils';
+import { useTerminal } from '../lib/TerminalContext';
 
 type StreamType = 'ROUTER' | 'COUNCIL' | 'AGENT' | 'WORKFLOW' | 'ARTIFACT' | 'INTEGRATION';
 
@@ -67,6 +68,7 @@ const INITIAL_LOGS: LogEntry[] = [
 ];
 
 export default function Terminal() {
+  const { collapsed, setCollapsed } = useTerminal();
   const [logs, setLogs] = useState<LogEntry[]>(INITIAL_LOGS);
   const [visibleStreams, setVisibleStreams] = useState<Set<StreamType>>(new Set(Object.keys(STREAM_CONFIG) as StreamType[]));
   const [visibleSeverities, setVisibleSeverities] = useState<Set<string>>(new Set(['info', 'success', 'warn', 'error']));
@@ -261,7 +263,10 @@ export default function Terminal() {
           : { boxShadow: 'inset 0 0 0px rgba(248,113,113,0)' }
       }
       transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-      className="h-80 border-t border-outline-variant bg-[#0b0c10] flex flex-col font-mono text-[11px] shrink-0 self-end w-full relative z-40 selection:bg-primary/30 overflow-hidden"
+      className={cn(
+        "border-t border-outline-variant bg-[#0b0c10] flex flex-col font-mono text-[11px] shrink-0 self-end w-full relative z-40 selection:bg-primary/30 overflow-hidden transition-all duration-300",
+        collapsed ? "h-8" : "h-64"
+      )}
     >
       <AnimatePresence>
         {isRecovering && (
@@ -339,12 +344,19 @@ export default function Terminal() {
           </div>
         </div>
         <div className="hidden md:flex flex-col items-end gap-0.5 whitespace-nowrap ml-4">
-           <span className="text-[9px] text-outline tracking-widest uppercase">Execution Core v1.0</span>
+           <span className="text-[9px] text-outline tracking-widest uppercase flex items-center gap-2">
+             Execution Core v1.0
+             <button onClick={() => setCollapsed(!collapsed)} className="text-outline hover:text-white transition-colors cursor-pointer p-1">
+               <ArrowUpDown className="w-3 h-3" />
+             </button>
+           </span>
            <span className="text-[#10b981] flex items-center gap-1.5 font-bold"><div className="w-1.5 h-1.5 rounded-full bg-[#10b981] shadow-[0_0_8px_#10b981] animate-pulse" /> SYSTEM LIVE</span>
         </div>
       </div>
       
-      {/* Heartbeat Monitoring Bar */}
+      {!collapsed && (
+        <>
+          {/* Heartbeat Monitoring Bar */}
       <div className="h-8 border-b border-outline-variant/30 flex items-center px-4 gap-4 bg-[#0a0a0b] shrink-0">
         <span className="text-[9px] text-outline tracking-widest uppercase font-bold flex items-center gap-2">
           <Activity className="w-3 h-3 text-[#00E5C3]" />
@@ -612,6 +624,8 @@ export default function Terminal() {
         )}
       </div>
       </div>
+      </>
+      )}
     </motion.footer>
   );
 }

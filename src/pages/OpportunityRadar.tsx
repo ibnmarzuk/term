@@ -1,9 +1,40 @@
+import React, { useState } from 'react';
 import { Rocket, Target, AlertTriangle, FileText, Download, Briefcase, TrendingUp, Settings } from 'lucide-react';
 import { motion } from 'motion/react';
+import { GoogleGenAI } from '@google/genai';
+import { toast } from 'sonner';
+import { useTerminal } from '../lib/TerminalContext';
+import { cn } from '../lib/utils';
 
 export default function OpportunityRadar() {
+  const { collapsed } = useTerminal();
+  const [query, setQuery] = useState('');
+  const [result, setResult] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleScan = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!query.trim()) return toast.error('Query cannot be empty');
+    
+    setLoading(true);
+    try {
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: `Analyze ecosystem vectors or recall strategic assets for the query: "${query}". Keep the answer short, maximum 3 bullet points.`,
+      });
+      setResult(response.text);
+      toast.success('Scan completed successfully');
+      setQuery('');
+    } catch (err: any) {
+      toast.error(err.message || 'Scan failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="max-w-5xl mx-auto flex flex-col gap-xxl">
+    <div className={cn("max-w-5xl mx-auto flex flex-col gap-xxl transition-all duration-300", collapsed ? "pb-8" : "pb-64")}>
       
       {/* Hero Command */}
       <section className="relative w-full text-center mb-16 mt-8">
@@ -18,17 +49,19 @@ export default function OpportunityRadar() {
         </div>
         
         <div className="relative z-10 max-w-2xl px-4 w-full mx-auto">
-          <div className="bg-[#071311] rounded-sm px-6 py-4 flex items-center gap-4 w-full max-w-xl mx-auto border border-[#12302A] shadow-[0_0_20px_rgba(0,229,195,0.08)]">
+          <form onSubmit={handleScan} className="bg-[#071311] rounded-sm px-6 py-4 flex items-center gap-4 w-full max-w-xl mx-auto border border-[#12302A] shadow-[0_0_20px_rgba(0,229,195,0.08)] opacity-100">
             <Target className="w-5 h-5 text-[#00E5C3]" />
             <input 
               type="text" 
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
               className="bg-transparent border-none focus:ring-0 text-[#F2F5F4] w-full text-sm placeholder-[#93A8A1]/40 focus:outline-none font-mono"
               placeholder="Analyze current market vectors or recall assets..."
             />
-            <span className="px-2 py-1 bg-[#020B0A] rounded border border-[#12302A] font-mono text-[10px] text-[#A1A1AA] flex-shrink-0 uppercase">
+            <button type="submit" disabled={loading} className="px-2 py-1 bg-[#020B0A] rounded border border-[#12302A] font-mono text-[10px] text-[#A1A1AA] flex-shrink-0 uppercase hover:text-white cursor-pointer disabled:opacity-50">
               CMD + K
-            </span>
-          </div>
+            </button>
+          </form>
         </div>
       </section>
 
@@ -40,11 +73,23 @@ export default function OpportunityRadar() {
             <h3 className="text-xl sm:text-2xl font-mono uppercase tracking-tight text-[#F2F5F4] font-bold">Active Targets</h3>
             <p className="text-[#93A8A1] text-xs font-sans font-normal mt-0.5">AI-driven market signal analysis</p>
           </div>
-          <button className="flex items-center gap-2 text-[#00E5C3] font-mono text-xs uppercase tracking-wider hover:text-[#00CFAE] transition-colors group cursor-pointer">
-            SCAN LIVE FEED 
+          <button onClick={() => handleScan()} disabled={loading} className="flex items-center gap-2 text-[#00E5C3] font-mono text-xs uppercase tracking-wider hover:text-[#00CFAE] transition-colors group cursor-pointer disabled:opacity-50">
+            {loading ? 'SCANNING...' : 'SCAN LIVE FEED'}
             <span className="group-hover:translate-x-1 transition-transform">→</span>
           </button>
         </div>
+
+        {result && (
+          <div className="mb-8 p-6 bg-[#071311] border border-[#00E5C3]/30 shadow-[0_0_15px_rgba(0,229,195,0.1)] rounded-xl relative">
+            <div className="absolute top-0 right-0 w-2 h-full bg-[#00E5C3]/10" />
+            <div className="absolute top-0 left-0 w-2 h-full bg-[#00E5C3]/10" />
+            <div className="absolute top-0 right-0 w-full h-2 bg-[#00E5C3]/10" />
+            <div className="absolute bottom-0 right-0 w-full h-2 bg-[#00E5C3]/10" />
+            <h4 className="text-[#00E5C3] text-[10px] uppercase font-mono tracking-widest mb-3 flex items-center gap-2"><Target className="w-3.5 h-3.5" /> Intelligence Report</h4>
+            <div className="text-sm text-[#F2F5F4] font-mono whitespace-pre-wrap leading-relaxed opacity-90">{result}</div>
+            <button onClick={() => setResult(null)} className="absolute top-4 right-4 text-[10px] uppercase text-[#93A8A1] hover:text-[#F2F5F4] border border-[#12302A] px-2 py-1 bg-[#020B0A] rounded cursor-pointer transition-colors">Clear</button>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter">
           {/* Primary Opportunity */}

@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useLivePreview } from '../lib/LivePreviewContext';
+import { useTerminal } from '../lib/TerminalContext';
 
 interface Agent {
   name: string;
@@ -17,6 +18,18 @@ interface Agent {
   deliverables: string[];
   sample: string;
 }
+
+const COLOR_MAP: Record<string, string> = {
+  engineering: '#00E5C3',
+  design: '#c084fc',
+  product: '#f472b6',
+  marketing: '#fbbf24',
+  content: '#00CFAE',
+  data: '#818cf8',
+  operations: '#fb7185',
+  customer: '#facc15',
+  default: '#93A8A1'
+};
 
 const DEPARTMENTS = [
   { id: 'all', name: 'All Departments' },
@@ -267,8 +280,10 @@ const AGENTS_LIST: Agent[] = [
 export default function AgentDirectory() {
   const navigate = useNavigate();
   const { simulateTask } = useLivePreview();
+  const { collapsed } = useTerminal();
   const [selectedDept, setSelectedDept] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [deployModal, setDeployModal] = useState<Agent | null>(null);
 
   const filteredAgents = AGENTS_LIST.filter(agent => {
     const matchesDept = selectedDept === 'all' || agent.department === selectedDept;
@@ -278,22 +293,10 @@ export default function AgentDirectory() {
     return matchesDept && matchesSearch;
   });
 
-  const getDeptColor = (dept: string) => {
-    switch (dept) {
-      case 'engineering': return '#00E5C3';
-      case 'design': return '#c084fc';
-      case 'product': return '#f472b6';
-      case 'marketing': return '#fbbf24';
-      case 'content': return '#00CFAE';
-      case 'data': return '#818cf8';
-      case 'operations': return '#fb7185';
-      case 'customer': return '#facc15';
-      default: return '#93A8A1';
-    }
-  };
+  const getDeptColor = (dept: string) => COLOR_MAP[dept] || COLOR_MAP.default;
 
   return (
-    <div className="flex flex-col h-full overflow-y-auto p-4 sm:p-8 scrollbar-hide pb-20 bg-[#020B0A] relative">
+    <div className={cn("flex flex-col h-full overflow-y-auto p-4 sm:p-8 scrollbar-hide bg-[#020B0A] relative", collapsed ? "pb-8" : "pb-64")}>
       <div className="absolute inset-0 z-0 pointer-events-none opacity-20" style={{ backgroundImage: 'radial-gradient(#12302A 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
 
       {/* Header section */}
@@ -319,7 +322,7 @@ export default function AgentDirectory() {
             />
           </div>
           <button 
-            onClick={() => simulateTask('Deploy New Agent Worker')}
+            onClick={() => setDeployModal(AGENTS_LIST[0])}
             className="w-full sm:w-auto px-5 py-2 bg-[#00E5C3] hover:bg-[#00CFAE] text-[#02110E] transition-all rounded text-xs font-mono uppercase tracking-wider flex items-center justify-center gap-2 font-bold cursor-pointer hover:shadow-[0_0_15px_rgba(0,229,195,0.2)]">
             <Plus className="w-3.5 h-3.5" /> Deploy Agent
           </button>
@@ -415,15 +418,79 @@ export default function AgentDirectory() {
                 {/* Command Feedback */}
                 <div className="mt-auto pt-4 border-t border-[#12302A]/50 flex flex-col gap-1.5">
                   <span className="text-[9px] font-mono text-[#526661] uppercase tracking-widest block font-bold">ROUTER FEEDBACK</span>
-                  <p className="text-[11px] font-mono text-[#F2F5F4] italic leading-normal bg-[#020B0A] p-2.5 rounded border border-[#12302A]/60">
+                  <p className="text-[11px] font-mono text-[#F2F5F4] italic leading-normal bg-[#020B0A] p-2.5 rounded border border-[#12302A]/60 mb-3">
                     &gt; "{agent.sample}"
                   </p>
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); setDeployModal(agent); }}
+                    className="mt-2 w-full py-2 bg-[#12302A] hover:bg-[#00E5C3] hover:text-black transition-colors rounded text-[10px] font-bold uppercase tracking-wider text-[#00E5C3]">
+                    Deploy Unit
+                  </button>
                 </div>
               </div>
             );
           })
         )}
       </div>
+
+      {deployModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#05110F] border border-[#00E5C3]/30 rounded-xl max-w-lg w-full flex flex-col shadow-2xl relative overflow-hidden">
+            <div className="px-6 py-5 border-b border-[#00E5C3]/10 flex items-center gap-4">
+              <deployModal.icon className="w-6 h-6 text-[#00E5C3]" />
+              <div>
+                <h3 className="font-mono text-[#F2F5F4] font-bold text-lg uppercase tracking-wider">Deploy Agent</h3>
+                <p className="text-[#93A8A1] text-xs font-sans mt-1">Select configuration and priorities.</p>
+              </div>
+            </div>
+            
+            <div className="p-6 flex flex-col gap-5">
+              <div>
+                <label className="text-[10px] uppercase font-mono tracking-widest text-[#00E5C3] mb-2 block">Selected Unit</label>
+                <select className="w-full bg-[#020B0A] border border-[#12302A] rounded p-2 text-sm text-[#F2F5F4] outline-none">
+                  {AGENTS_LIST.map(a => (
+                     <option key={a.name} value={a.name} selected={a.name === deployModal.name}>{a.name}</option>
+                  ))}
+                </select>
+              </div>
+              
+              <div>
+                <label className="text-[10px] uppercase font-mono tracking-widest text-[#00E5C3] mb-2 block">Priority</label>
+                <select className="w-full bg-[#020B0A] border border-[#12302A] rounded p-2 text-sm text-[#F2F5F4] outline-none">
+                  <option value="CRITICAL">Critical Path (Immediate)</option>
+                  <option value="HIGH">High Priority (Queue Next)</option>
+                  <option value="STANDARD" selected>Standard (Backlog)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-[10px] uppercase font-mono tracking-widest text-[#00E5C3] mb-2 block">Memory Instructions</label>
+                <textarea 
+                  rows={4} 
+                  placeholder="Inject initial context, variables, or specific directives..." 
+                  className="w-full bg-[#020B0A] border border-[#12302A] rounded p-3 text-sm text-[#F2F5F4] outline-none resize-none placeholder:text-[#526661]"
+                />
+              </div>
+            </div>
+            
+            <div className="px-6 py-4 border-t border-[#00E5C3]/10 bg-[#020B0A] flex justify-end gap-3">
+              <button 
+                onClick={() => setDeployModal(null)}
+                className="px-4 py-2 border border-[#12302A] hover:bg-[#12302A] rounded font-mono text-xs uppercase tracking-wider text-[#93A8A1] transition-colors">
+                Cancel
+              </button>
+              <button 
+                onClick={() => {
+                  simulateTask(`Deploying ${deployModal.name}`);
+                  setDeployModal(null);
+                }}
+                className="px-4 py-2 bg-[#00E5C3] hover:bg-[#00CFAE] text-[#02110E] rounded font-mono text-xs font-bold uppercase tracking-wider transition-colors shadow-[0_0_10px_rgba(0,229,195,0.2)]">
+                Deploy Agent
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

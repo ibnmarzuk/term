@@ -18,9 +18,9 @@ export default function Sidebar() {
       
       <nav className="flex-1 px-3 space-y-1">
         {/* New Execution Action */}
-        <button className="flex items-center gap-2 px-3 py-2.5 rounded-md text-[13px] text-[#00e59b] hover:bg-[#00e59b]/10 transition-colors w-full text-left font-medium mb-4">
+        <NavLink to="/command-center" className="flex items-center gap-2 px-3 py-2.5 rounded-md text-[13px] text-[#00e59b] hover:bg-[#00e59b]/10 transition-colors w-full text-left font-medium mb-4">
           <Plus className="w-4 h-4" /> New Execution
-        </button>
+        </NavLink>
 
         <NavLink to="/command-center" className={({ isActive }) => cn(
           "flex items-center gap-3 px-3 py-2 rounded-md text-[13px] transition-colors w-full text-left",
@@ -59,13 +59,6 @@ export default function Sidebar() {
           <Cpu className="w-4 h-4 shrink-0" /> Copilot
         </NavLink>
         
-        <NavLink to="/radar" className={({ isActive }) => cn(
-            "flex items-center gap-3 px-3 py-2 rounded-md text-[13px] transition-colors w-full text-left",
-            isActive ? "bg-[#27272a]/50 text-white" : "text-[#a1a1aa] hover:bg-[#27272a]/30 hover:text-white"
-          )}>
-            <Radar className="w-4 h-4 shrink-0" /> Opportunities
-        </NavLink>
-        
         <NavLink to="/brain" className={({ isActive }) => cn(
           "flex items-center gap-3 px-3 py-2 rounded-md text-[13px] transition-colors w-full text-left",
           isActive ? "bg-[#27272a]/50 text-white" : "text-[#a1a1aa] hover:bg-[#27272a]/30 hover:text-white"
@@ -89,12 +82,6 @@ export default function Sidebar() {
           </div>
         </div>
         
-        <button className="flex items-center gap-3 px-3 py-1.5 rounded-md text-[13px] text-[#a1a1aa] hover:bg-[#27272a]/30 hover:text-white transition-colors w-full text-left">
-          <Workflow className="w-4 h-4 shrink-0 text-[#71717a]" /> Active
-        </button>
-        <button className="flex items-center gap-3 px-3 py-1.5 rounded-md text-[13px] text-[#a1a1aa] hover:bg-[#27272a]/30 hover:text-white transition-colors w-full text-left">
-          <Box className="w-4 h-4 shrink-0 text-[#71717a]" /> Bounties
-        </button>
       </nav>
 
       {/* User profile section */}

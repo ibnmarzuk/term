@@ -26,6 +26,7 @@ import Contact from './pages/Contact';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import { AuthProvider, useAuth } from './lib/AuthContext';
+import { LivePreviewProvider } from './lib/LivePreviewContext';
 
 import { Toaster } from 'sonner';
 
@@ -81,9 +82,11 @@ export default function App() {
     <>
       <Toaster theme="dark" position="bottom-right" />
       <AuthProvider>
-        <Router>
-          <AnimatedRoutes />
-        </Router>
+        <LivePreviewProvider>
+          <Router>
+            <AnimatedRoutes />
+          </Router>
+        </LivePreviewProvider>
       </AuthProvider>
     </>
   );

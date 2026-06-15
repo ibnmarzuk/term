@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { GitCommit, AlertTriangle, CheckCircle2, Clock, Activity, Target, Shield, Zap, Search, Code, User, ChevronRight } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Skeleton } from '../components/Skeleton';
@@ -6,6 +7,7 @@ import { cn } from '../lib/utils';
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, useDroppable } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useLivePreview } from '../lib/LivePreviewContext';
 
 interface TaskNode {
   id: string;
@@ -80,6 +82,8 @@ function KanbanColumn({ id, title, nodes }: { id: string, title: string, nodes: 
 }
 
 export default function TrackingBoard() {
+  const navigate = useNavigate();
+  const { simulateTask } = useLivePreview();
   const [loading, setLoading] = useState(true);
   const [nodes, setNodes] = useState<TaskNode[]>(INITIAL_NODES);
   const [activeTask, setActiveTask] = useState<TaskNode | null>(null);
@@ -272,7 +276,7 @@ export default function TrackingBoard() {
                         <p className="text-xs text-outline mb-3">{b.reason}</p>
                         <div className="flex items-center justify-between border-t border-error/10 pt-3">
                            <span className="text-[10px] text-on-surface-variant font-mono">Owner: {b.agent}</span>
-                           <button className="text-[10px] bg-background text-on-surface px-2 py-1 rounded border border-outline-variant hover:border-error transition-colors active:scale-95">Intervene</button>
+                           <button onClick={() => simulateTask('Intervene: ' + b.agent)} className="text-[10px] cursor-pointer bg-background text-on-surface px-2 py-1 rounded border border-outline-variant hover:border-error transition-colors active:scale-95">Intervene</button>
                         </div>
                      </div>
                   ))

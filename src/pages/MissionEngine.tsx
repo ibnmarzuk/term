@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts';
+import { useLivePreview } from '../lib/LivePreviewContext';
 
 // MISSION ENGINE Interfaces & Data
 interface MissionTask {
@@ -208,6 +209,8 @@ export default function MissionEngine() {
     return () => clearInterval(timer);
   }, []);
 
+  const { simulateTask } = useLivePreview();
+
   const handleCreateMission = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTitle.trim()) return;
@@ -237,6 +240,9 @@ export default function MissionEngine() {
     setMissions(prev => prev.map(m => {
       if (m.id === id) {
         const nextStatus = m.status === 'RUNNING' ? 'PAUSED' : 'RUNNING';
+        if (nextStatus === 'RUNNING') {
+          simulateTask(m.title);
+        }
         return { ...m, status: nextStatus };
       }
       return m;

@@ -6,20 +6,28 @@ import {
   Activity, Server, Database, Layers, CheckCircle2, AlertTriangle, RefreshCw, Star, ArrowRight, Lock, HelpCircle, DollarSign, Clock, Check
 } from 'lucide-react';
 import { cn } from '../lib/utils';
+import WorkforceView from '../components/WorkforceView';
+import TaskRegistry from '../components/TaskRegistry';
+import MCPConnections from '../components/MCPConnections';
+import { useLivePreview } from '../lib/LivePreviewContext';
 
 // Agent Specification Interface
 interface Agent {
   name: string;
-  department: 'Product' | 'Design' | 'Engineering' | 'Quality Assurance' | 'Operations' | 'Council';
+  department: 'Product' | 'Design' | 'Engineering' | 'Quality Assurance' | 'Operations' | 'Cybersecurity' | 'Council';
+  role: string;
+  status: 'ACTIVE' | 'WAITING' | 'BLOCKED' | 'FAILED' | 'COMPLETED' | 'IDLE';
   capabilities: string[];
   skills: string[];
   tools: string[];
   memory: string[];
-  successRate: number;
-  failureRate: number;
-  latencyAvg: string;
-  costPerTask: string;
-  qualityScore: number;
+  performance: {
+    successRate: number;
+    failureRate: number;
+    qualityScore: number;
+    latencyAvg: string;
+    costPerTask: string;
+  };
 }
 
 // Supervisor Interface
@@ -59,93 +67,79 @@ const AGENTS_DATABASE: Record<string, Agent> = {
   "Product Manager": {
     name: "Product Manager",
     department: "Product",
+    role: "Strategist",
+    status: 'IDLE',
     capabilities: ["PRD Writing", "Structural Assesment", "User Flow Mapping"],
     skills: ["Product Strategy", "User Persona Research", "Requirement Schema Analysis"],
     tools: ["Markdown Schema Spec", "Figma Workspace Sync", "Google Sheets API"],
     memory: ["Past SaaS PRDs", "Compliance templates", "Standard pricing workflow structures"],
-    successRate: 98.8,
-    failureRate: 1.2,
-    latencyAvg: "2.1s",
-    costPerTask: "$0.02",
-    qualityScore: 98
+    performance: { successRate: 98.8, failureRate: 1.2, qualityScore: 98, latencyAvg: "2.1s", costPerTask: "$0.02" }
   },
   "UI/UX Designer": {
     name: "UI/UX Designer",
     department: "Design",
+    role: "Layout Architect",
+    status: 'IDLE',
     capabilities: ["UI Design", "Figma Design", "Typography Pairing"],
     skills: ["Build Interface Layouts", "Create Interactive Mockups", "Visual Hierarchy Design"],
     tools: ["Figma Design", "Typography Theme Parser", "CSS Layout Engine"],
     memory: ["Past design components", "Inter and Space Grotesk layout tokens", "Tailwind styling presets"],
-    successRate: 97.4,
-    failureRate: 2.6,
-    latencyAvg: "3.5s",
-    costPerTask: "$0.04",
-    qualityScore: 97
+    performance: { successRate: 97.4, failureRate: 2.6, qualityScore: 97, latencyAvg: "3.5s", costPerTask: "$0.04" }
   },
   "Frontend Engineer": {
     name: "Frontend Engineer",
     department: "Engineering",
+    role: "Component Builder",
+    status: 'IDLE',
     capabilities: ["React", "Tailwind CSS", "TypeScript", "UI Implementation"],
     skills: ["Build Interface", "Create Components", "Fix Frontend Bugs", "Performance Profiling"],
     tools: ["Vite Compiler", "npm Utility", "Tailwind CSS Pipeline Engine"],
     memory: ["Previous UI builds", "Reusable React component maps", "Asset import resolution techniques"],
-    successRate: 99.1,
-    failureRate: 0.9,
-    latencyAvg: "3.2s",
-    costPerTask: "$0.05",
-    qualityScore: 99
+    performance: { successRate: 99.1, failureRate: 0.9, qualityScore: 99, latencyAvg: "3.2s", costPerTask: "$0.05" }
   },
   "Backend Engineer": {
     name: "Backend Engineer",
     department: "Engineering",
+    role: "API Integrator",
+    status: 'IDLE',
     capabilities: ["Node.js", "Express", "API Integration", "Database Schema Design"],
     skills: ["API Routing Setup", "Relational Database client connections", "Express proxy configuration"],
     tools: ["TypeScript tsx compiler", "REST API generators", "SQL builders"],
     memory: ["Previous SQL endpoints", "JWT secure structures", "Express dev-server integrations"],
-    successRate: 98.2,
-    failureRate: 1.8,
-    latencyAvg: "2.9s",
-    costPerTask: "$0.04",
-    qualityScore: 98
+    performance: { successRate: 98.2, failureRate: 1.8, qualityScore: 98, latencyAvg: "2.9s", costPerTask: "$0.04" }
   },
   "QA Engineer": {
     name: "QA Engineer",
     department: "Quality Assurance",
+    role: "Code Verifier",
+    status: 'IDLE',
     capabilities: ["Unit Testing", "Boundary Audits", "Fuzz Testing", "Integration Testing"],
     skills: ["Verify Codebase validity", "TypeScript compiler check", "Linter compliance verification"],
     tools: ["Node.js Ast Parser linter", "Jest/Vitest Frameworks"],
     memory: ["Known code exceptions", "Standard strict tsconfig rules", "Responsive element guidelines"],
-    successRate: 99.7,
-    failureRate: 0.3,
-    latencyAvg: "1.8s",
-    costPerTask: "$0.01",
-    qualityScore: 100
+    performance: { successRate: 99.7, failureRate: 0.3, qualityScore: 100, latencyAvg: "1.8s", costPerTask: "$0.01" }
   },
   "DevOps Engineer": {
     name: "DevOps Engineer",
     department: "Engineering",
+    role: "Deployment Specialist",
+    status: 'IDLE',
     capabilities: ["Cloud Hosting Setup", "CI/CD Automations", "Resource Provisioner"],
     skills: ["Production Bundling", "Build optimizations", "Port mappings (port 3000 mapping)"],
     tools: ["esbuild packagers", "Vercel integration flow API", "Docker virtualization tools"],
     memory: ["Server-side Node cold starts", "Nginx proxy rulesets", "Route redirect fallbacks"],
-    successRate: 98.5,
-    failureRate: 1.5,
-    latencyAvg: "2.4s",
-    costPerTask: "$0.03",
-    qualityScore: 98
+    performance: { successRate: 98.5, failureRate: 1.5, qualityScore: 98, latencyAvg: "2.4s", costPerTask: "$0.03" }
   },
   "Technical Writer": {
     name: "Technical Writer",
     department: "Operations",
+    role: "Documentation Specialist",
+    status: 'IDLE',
     capabilities: ["Documentation", "APIs README", "User Guides formulation"],
     skills: ["Architectural documentation", "API specifications", "Quickstart guides"],
     tools: ["Markdown formatters", "Typedocs API documentation generator"],
     memory: ["Technical glossary", "Standard git releases patterns", "Product specification sheets"],
-    successRate: 96.4,
-    failureRate: 3.6,
-    latencyAvg: "1.2s",
-    costPerTask: "$0.01",
-    qualityScore: 96
+    performance: { successRate: 96.4, failureRate: 3.6, qualityScore: 96, latencyAvg: "1.2s", costPerTask: "$0.01" }
   }
 };
 
@@ -176,6 +170,7 @@ const SUPERVISORS: Supervisor[] = [
 ];
 
 export default function CommandCenter() {
+  const { startTask, updateProgress, addLog, completeTask } = useLivePreview();
   const [inputText, setInputText] = useState('');
   const [currentMissionStatus, setCurrentMissionStatus] = useState<'DRAFT' | 'PLANNED' | 'APPROVED' | 'RUNNING' | 'COMPLETED'>('DRAFT');
   const [isExecuting, setIsExecuting] = useState(false);
@@ -193,7 +188,44 @@ export default function CommandCenter() {
   
   // Selection
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
+  const [viewMode, setViewMode] = useState<'MISSION' | 'WORKFORCE' | 'REGISTRY' | 'CONNECTIONS'>('MISSION');
+  const [completedTasks, setCompletedTasks] = useState<{id: string; name: string; status: 'Completed' | 'Failed'; timestamp: string}[]>([]);
+  const [connections, setConnections] = useState<Record<string, {name: string, status: 'READY' | 'DORMANT' | 'ERROR', lastChecked: string}>>({
+    'GitHub': { name: 'GitHub', status: 'READY', lastChecked: 'Just now' },
+    'Vercel': { name: 'Vercel', status: 'READY', lastChecked: 'Just now' },
+    'Supabase': { name: 'Supabase', status: 'DORMANT', lastChecked: '1h ago' }
+  });
+
+  const toggleConnection = (name: string) => {
+    setConnections(prev => ({
+      ...prev,
+      [name]: {
+        ...prev[name],
+        status: prev[name].status === 'READY' ? 'DORMANT' : 'READY',
+        lastChecked: 'Just now'
+      }
+    }));
+  };
   
+  // Voting management
+  const [isVoting, setIsVoting] = useState(false);
+  const [councilVotes, setCouncilVotes] = useState<Record<string, boolean | null>>({});
+
+  // Council mission queue
+  interface QueuedMission {
+    id: string;
+    name: string;
+    risk: 'Low' | 'High';
+    status: 'Pending' | 'Approved';
+  }
+  const [missionQueue, setMissionQueue] = useState<QueuedMission[]>([]);
+
+  // Simple risk assessment
+  const assessRisk = (task: string): 'Low' | 'High' => {
+    const highRiskKeywords = ['ai', 'arbitrage', 'proxy', 'auth', 'database'];
+    return highRiskKeywords.some(keyword => task.toLowerCase().includes(keyword)) ? 'High' : 'Low';
+  };
+
   // Dom references
   const isResizingRef = useRef(false);
   const terminalScrollRef = useRef<HTMLDivElement>(null);
@@ -204,6 +236,21 @@ export default function CommandCenter() {
     memoryUsage: "28.4 MB",
     systemLatency: "11ms"
   });
+
+  // System status report on boot
+  useEffect(() => {
+    if (timelineLogs.length === 0) {
+      setTimelineLogs([{
+        id: 'init-cap-report',
+        timestamp: getFormattedTime(),
+        stepIndex: 0,
+        type: 'SYSTEM',
+        actor: 'Kernel Sentry',
+        status: 'INFO',
+        message: "Run a simulation or select a design template to initiate the Router Engine task allocation process. No agent compiles autonomously."
+      }]);
+    }
+  }, []);
 
   // Calculate live dynamic costs based on the active step
   const getDynamicCost = () => {
@@ -650,14 +697,33 @@ export default function CommandCenter() {
     const task = inputText.trim() || "Build an AI Resume Analyzer SaaS";
     setInputText(task);
     
-    // Set mission status
-    setCurrentMissionStatus('PLANNED');
+    const risk = assessRisk(task);
+    const newMission: QueuedMission = { id: `m-${Date.now()}`, name: task, risk, status: 'Pending' };
+    
+    setMissionQueue(prev => [...prev, newMission]);
+
+    if (risk === 'High') {
+      setCurrentMissionStatus('PLANNED');
+      setIsVoting(true);
+      setCouncilVotes(Object.fromEntries(COUNCIL_MEMBERS.map(m => [m.name, null])));
+    } else {
+      // Auto-approve low risk
+      proceedWithExecution(task);
+    }
+  };
+
+  const proceedWithExecution = (taskName: string = inputText) => {
+    setIsVoting(false);
     setIsExecuting(true);
     setActiveStepIndex(0);
     setIsPlaying(true);
     
-    const seq = generateSequence(task);
+    // Update queue status
+    setMissionQueue(prev => prev.map(m => m.name === taskName ? {...m, status: 'Approved'} : m));
+    
+    const seq = generateSequence(taskName);
     setTimelineLogs(seq);
+    startTask(`T-${Date.now()}`, "Processing...");
   };
 
   // Replay handler
@@ -678,8 +744,18 @@ export default function CommandCenter() {
           // Dynamically adjust mission status
           const nextStep = timelineLogs[nextIdx];
           if (nextStep) {
+            addLog(nextStep.message);
+            updateProgress((nextIdx / timelineLogs.length) * 100, nextStep.status === 'RUNNING' ? 'Processing...' : nextStep.actor);
             if (nextStep.stepIndex >= 27) {
               setCurrentMissionStatus('COMPLETED');
+              completeTask();
+              // Save task
+              setCompletedTasks(prev => [...prev, {
+                id: `T-${Date.now()}`,
+                name: inputText,
+                status: 'Completed',
+                timestamp: getFormattedTime()
+              }]);
             } else if (nextStep.stepIndex >= 4) {
               setCurrentMissionStatus('RUNNING');
             } else if (nextStep.stepIndex >= 3) {
@@ -790,19 +866,108 @@ export default function CommandCenter() {
         </div>
       </div>
 
+      {/* ALERT BANNER */}
+      {missionQueue.some(m => m.risk === 'High' && m.status === 'Pending') && !isVoting && (
+        <div className="bg-red-950/30 border-b border-red-900/50 px-6 py-2 flex items-center justify-between z-10 animate-pulse">
+          <div className="flex items-center gap-2 text-red-400 font-bold text-[10px] uppercase tracking-widest">
+            <AlertTriangle className="w-4 h-4" />
+            Council Review Required for High-Risk Mission
+          </div>
+          <button onClick={() => setIsVoting(true)} className="px-3 py-1 bg-red-900 text-white rounded text-[10px] font-bold uppercase cursor-pointer hover:bg-red-800">
+            Open Council Engine
+          </button>
+        </div>
+      )}
+
+      {/* EXECUTION READINESS BANNER */}
+      <div className="bg-[#030B09] border-b border-[#00E5C3]/10 px-6 py-2 grid grid-cols-3 gap-6 text-[10px]">
+        <div className="text-zinc-500">
+          <span className="font-bold text-zinc-300 uppercase">System Limits:</span> Sandbox Port 3000 ● Autonomous Only
+        </div>
+        <div className="text-zinc-500">
+          <span className="font-bold text-zinc-300 uppercase">MCP Active:</span> GitHub <span className="text-emerald-500">READY</span> ● Vercel <span className="text-emerald-500">READY</span> ● Supabase <span className="text-zinc-600">DORMANT</span>
+        </div>
+        <div className="text-zinc-500 flex items-center justify-between">
+          <span className="flex items-center gap-1 font-bold text-amber-500 uppercase"><AlertTriangle className="w-3 h-3" /> Needs: Supabase Secret</span>
+        </div>
+      </div>
+
       {/* MAIN CONTAINER: TWO COLUMN LAYOUT */}
       <div className="flex-1 flex overflow-hidden relative z-10">
         
+        {isVoting && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center p-6 bg-black/90 backdrop-blur-sm">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-[#040C0A] border border-[#00E5C3]/20 rounded-xl p-8 max-w-lg w-full shadow-2xl">
+              <h2 className="text-lg font-bold text-white mb-1">High-Risk Mission Approval</h2>
+              <p className="text-zinc-500 text-xs mb-6">// COUNCIL REVIEW REQUIRED</p>
+              
+              <div className="space-y-3 mb-8">
+                {COUNCIL_MEMBERS.map(member => (
+                  <div key={member.name} className="flex items-center justify-between p-3 bg-zinc-950 border border-zinc-900 rounded-lg text-xs">
+                    <div>
+                      <div className="font-bold text-zinc-300">{member.name}</div>
+                      <div className="text-[10px] text-zinc-600">{member.role}</div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button 
+                         onClick={() => setCouncilVotes(v => ({...v, [member.name]: true}))}
+                         className={cn("px-3 py-1 rounded text-[10px] uppercase font-bold transition-all", councilVotes[member.name] === true ? "bg-emerald-600 text-white" : "bg-zinc-800 text-zinc-400 hover:bg-emerald-800")}>Accept</button>
+                      <button 
+                         onClick={() => setCouncilVotes(v => ({...v, [member.name]: false}))}
+                         className={cn("px-3 py-1 rounded text-[10px] uppercase font-bold transition-all", councilVotes[member.name] === false ? "bg-red-600 text-white" : "bg-zinc-800 text-zinc-400 hover:bg-red-800")}>Reject</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex justify-end pt-4 border-t border-zinc-900">
+                <button 
+                  disabled={Object.values(councilVotes).some(v => v === null || v === false)}
+                  onClick={proceedWithExecution}
+                  className="px-6 py-2 bg-[#00E5C3] text-black font-bold text-xs rounded disabled:opacity-30 disabled:cursor-not-allowed">
+                  Execute Mission
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {viewMode === 'REGISTRY' && (
+           <div className="flex-1 p-6">
+             <TaskRegistry tasks={completedTasks} />
+           </div>
+        )}
+
+        {viewMode === 'CONNECTIONS' && (
+           <div className="flex-1 p-6">
+             <MCPConnections connections={connections} onToggle={toggleConnection} />
+           </div>
+        )}
+
         {/* LEFT PANEL: INPUT BAR + CORE TERMINAL EXECUTION FEED */}
-        <div className="flex-1 flex flex-col p-6 pb-2 min-w-0 pr-3">
+        <div className={cn("flex-1 flex-col p-6 pb-2 min-w-0 pr-3", viewMode === 'MISSION' ? 'flex' : 'hidden')}>
           
-          {/* Section Breadcrumbs */}
+          {/* Section Breadcrumbs & Mode Switcher */}
           <div className="mb-3.5 flex items-center justify-between">
-            <div>
-              <span className="text-[9px] text-[#00E5C3] tracking-[0.3em] font-bold">// SOVEREIGN TERMINAL COMMAND CENTER</span>
-              <h1 className="text-base font-bold text-white uppercase tracking-tight">Assigned Task Sandbox</h1>
+            <div className="flex gap-4 items-center">
+               <button 
+                  onClick={() => setViewMode('MISSION')}
+                  className={cn("text-[9px] tracking-[0.3em] font-bold uppercase transition-colors", viewMode === 'MISSION' ? 'text-[#00E5C3]' : 'text-zinc-600 hover:text-zinc-400')}
+               >// MISSION TERMINAL</button>
+               <button 
+                  onClick={() => setViewMode('WORKFORCE')}
+                  className={cn("text-[9px] tracking-[0.3em] font-bold uppercase transition-colors", viewMode === 'WORKFORCE' ? 'text-[#00E5C3]' : 'text-zinc-600 hover:text-zinc-400')}
+               >// WORKFORCE</button>
+               <button 
+                  onClick={() => setViewMode('REGISTRY')}
+                  className={cn("text-[9px] tracking-[0.3em] font-bold uppercase transition-colors", viewMode === 'REGISTRY' ? 'text-[#00E5C3]' : 'text-zinc-600 hover:text-zinc-400')}
+               >// REGISTRY</button>
+               <button 
+                  onClick={() => setViewMode('CONNECTIONS')}
+                  className={cn("text-[9px] tracking-[0.3em] font-bold uppercase transition-colors", viewMode === 'CONNECTIONS' ? 'text-[#00E5C3]' : 'text-zinc-600 hover:text-zinc-400')}
+               >// CONNECTIONS</button>
             </div>
-            {isExecuting && (
+            {isExecuting && viewMode === 'MISSION' && (
               <div className="flex items-center gap-2 px-2.5 py-0.5 bg-zinc-950 border border-zinc-800 rounded">
                 <span className="w-1.5 h-1.5 bg-yellow-500 rounded-full animate-ping" />
                 <span className="text-[8px] text-zinc-300 uppercase tracking-widest">STEP {activeStepIndex + 1}/{timelineLogs.length}</span>
@@ -1056,8 +1221,32 @@ export default function CommandCenter() {
               </div>
             </div>
           </div>
+          
+          {/* DIVISION A.5: COUNCIL QUEUE */}
+          <div className="mb-5 border-b border-zinc-800 pb-4">
+            <span className="text-[9px] text-cyan-400 font-bold uppercase tracking-[0.2em] block mb-2">// COUNCIL MISSION QUEUE</span>
+            {missionQueue.length === 0 ? (
+               <div className="text-[10px] text-zinc-600 italic">No missions currently queued for review.</div>
+            ) : (
+                <div className="space-y-2">
+                    {missionQueue.map(m => (
+                        <div key={m.id} className="bg-zinc-950 border border-zinc-900 rounded p-2 text-[10px] flex justify-between items-center">
+                            <span className="truncate max-w-[120px] text-zinc-300">{m.name}</span>
+                            <span className={cn("font-bold", m.risk === 'High' ? "text-red-400" : "text-emerald-400")}>{m.risk}</span>
+                            <span className={cn("text-[8px] font-bold", m.status === 'Approved' ? "text-cyan-400" : "text-yellow-500")}>{m.status}</span>
+                        </div>
+                    ))}
+                </div>
+            )}
+          </div>
 
-          {/* DIVISION B: STEP 15 SOVEREIGN COUNCIL ENGINE */}
+          {/* DIVISION A.6: DIGITAL WORKFORCE KERNEL */}
+          {viewMode === 'WORKFORCE' && (
+             <div className="mb-5 border-b border-zinc-800 pb-4">
+                <span className="text-[9px] text-cyan-400 font-bold uppercase tracking-[0.2em] block mb-2">// DIGITAL WORKFORCE KERNEL</span>
+                <WorkforceView agents={AGENTS_DATABASE} compact={true} />
+             </div>
+          )}
           <div className="mb-5 border-b border-zinc-800 pb-4">
             <span className="text-[9px] text-cyan-400 font-bold uppercase tracking-[0.2em] block mb-2">// HIGH-RISK COUNCIL ENVELOPE</span>
             

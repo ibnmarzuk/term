@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Code, Shield, Activity, FileText, Layout, Paintbrush, TrendingUp, Search, 
   FileJson, Database, Cpu, Layers, Users, Settings, Network, BarChart, 
   UserCheck, Briefcase, Headphones, LineChart, BookOpen, Plus, Sparkles, Filter 
 } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { useLivePreview } from '../lib/LivePreviewContext';
 
 interface Agent {
   name: string;
@@ -263,6 +265,8 @@ const AGENTS_LIST: Agent[] = [
 ];
 
 export default function AgentDirectory() {
+  const navigate = useNavigate();
+  const { simulateTask } = useLivePreview();
   const [selectedDept, setSelectedDept] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -314,7 +318,9 @@ export default function AgentDirectory() {
               className="bg-transparent text-sm text-[#F2F5F4] outline-none w-full placeholder:text-[#526661] font-sans"
             />
           </div>
-          <button className="w-full sm:w-auto px-5 py-2 bg-[#00E5C3] hover:bg-[#00CFAE] text-[#02110E] transition-all rounded text-xs font-mono uppercase tracking-wider flex items-center justify-center gap-2 font-bold cursor-pointer hover:shadow-[0_0_15px_rgba(0,229,195,0.2)]">
+          <button 
+            onClick={() => simulateTask('Deploy New Agent Worker')}
+            className="w-full sm:w-auto px-5 py-2 bg-[#00E5C3] hover:bg-[#00CFAE] text-[#02110E] transition-all rounded text-xs font-mono uppercase tracking-wider flex items-center justify-center gap-2 font-bold cursor-pointer hover:shadow-[0_0_15px_rgba(0,229,195,0.2)]">
             <Plus className="w-3.5 h-3.5" /> Deploy Agent
           </button>
         </div>

@@ -103,11 +103,7 @@ export default function Landing() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#00E5C3]/5 rounded-full blur-[120px] pointer-events-none" />
           
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            {/* Version Pill */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#071311] border border-[#12302A] rounded-full mb-6">
-              <span className="w-2 h-2 rounded-full bg-[#00E5C3] animate-pulse" />
-              <span className="text-[10px] uppercase font-mono tracking-widest text-[#93A8A1]">Execution OS • v1.2 • Live</span>
-            </div>
+
 
             {/* Main Headline */}
             <h1 className="text-4xl sm:text-6xl font-mono uppercase tracking-tight font-bold text-[#F2F5F4] max-w-4xl mx-auto leading-none mb-6">
